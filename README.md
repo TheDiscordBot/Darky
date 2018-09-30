@@ -1,2 +1,2 @@
 # Darky
-DARKY > bulby
+DARKY < bulby
