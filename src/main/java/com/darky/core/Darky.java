@@ -1,5 +1,6 @@
 package com.darky.core;
 
+import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.entities.Game;
@@ -34,6 +35,7 @@ public class Darky {
         } catch (LoginException e) {
             e.printStackTrace();
         }
+        CommandSettings settings = new CommandSettings("d!", shardManager, true);
     }
 
 }

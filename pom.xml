@@ -39,6 +39,10 @@
             <artifactId>json</artifactId>
             <version>20180813</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.johnnyjayjay</groupId>
+            <artifactId>CommandAPI</artifactId>
+            <version>3.2</version>
+        </dependency>
     </dependencies>
 </project>
