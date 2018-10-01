@@ -20,6 +20,12 @@ class Config {
     private String token;
     @SerializedName("SHARDS")
     private int shards;
+    @SerializedName("DB_HOST")
+    private String db_host;
+    @SerializedName("DB_USER")
+    private String db_user;
+    @SerializedName("DB_PW")
+    private String db_pw;
 
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
 
@@ -62,5 +68,17 @@ class Config {
 
     public int getShards() {
         return shards;
+    }
+
+    public String getDb_host() {
+        return db_host;
+    }
+
+    public String getDb_user() {
+        return db_user;
+    }
+
+    public String getDb_pw() {
+        return db_pw;
     }
 }
