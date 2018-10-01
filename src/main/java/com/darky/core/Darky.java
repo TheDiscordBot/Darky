@@ -14,16 +14,15 @@ public class Darky {
     private ShardManager shardManager;
     private Config config;
     private Logger logger = LoggerFactory.getLogger(Darky.class);
+    private Database database;
 
     public static void main(String[] args) {
         new Darky().run();
     }
 
-    public Darky() {
-    }
-
     private void run() {
         this.config = Config.loadConfig("config.json");
+        this.database = new Database(config).connect();
 
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(config.getToken())
