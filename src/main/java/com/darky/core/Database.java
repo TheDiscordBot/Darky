@@ -95,6 +95,12 @@ public class Database {
     }
 
     private static class Statements {
-        public static String[] createTables = {};
+        public static String[] createTables = {
+                "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,PRIMARY KEY (user_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_member (member_id BIGINT NOT NULL AUTO_INCREMENT, guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL," +
+                    "UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id) ON DELETE CASCADE,FOREIGN KEY (user_id) " +
+                    "REFERENCES Discord_user (user_id),PRIMARY KEY (member_id));"
+        };
     }
 }
