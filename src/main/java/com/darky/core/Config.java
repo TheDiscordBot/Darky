@@ -22,6 +22,10 @@ class Config {
     private int shards;
     @SerializedName("DB_HOST")
     private String db_host;
+    @SerializedName("DB_PORT")
+    private String db_port;
+    @SerializedName("DB_NAME")
+    private String db_name;
     @SerializedName("DB_USER")
     private String db_user;
     @SerializedName("DB_PW")
@@ -80,5 +84,13 @@ class Config {
 
     public String getDb_pw() {
         return db_pw;
+    }
+
+    public String getDb_name() {
+        return db_name;
+    }
+
+    public String getDb_port() {
+        return db_port;
     }
 }

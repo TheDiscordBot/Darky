@@ -1,11 +1,10 @@
 package com.darky.core;
 
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.*;
+
+import static java.lang.String.format;
 
 public class Database {
 
@@ -18,14 +17,33 @@ public class Database {
     }
 
     public Database connect() {
-        try {
-            connection = DriverManager.getConnection("jdbc:mysql://"+config.getDb_host()+"/?serverTimezone=UTC", config.getDb_user(), config.getDb_pw());
+        logger.info("connecting to DB...");
+        String sql = "CREATE DATABASE IF NOT EXISTS " + config.getDb_name() + ";";
+        try (Connection connection = DriverManager.getConnection(
+                format("jdbc:mysql://%s:%s/?serverTimezone=UTC&useSSL=false", config.getDb_host(), config.getDb_port()), config.getDb_user(), config.getDb_pw());
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.executeUpdate();
+            this.connection = DriverManager.getConnection(format("jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", config.getDb_host(), config.getDb_port(), config.getDb_name()), config.getDb_user(), config.getDb_pw());
         } catch (SQLException e) {
-            logger.error("An Error occurred while connecting to the Database... ", e);
-            logger.error("Exiting...");
+            logger.error("Exception caught while connecting", e);
             System.exit(1);
         }
+        createTablesIfNotExist();
+        logger.info("connected to DB!");
         return this;
+    }
+
+    public void createTablesIfNotExist() {
+        try {
+            for (String statement : Statements.createTables) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Exception caught while creating tables", e);
+            System.exit(1);
+        }
     }
 
     private <T> T getFirst(String column, String sql, Class<T> type, Object... args) {
@@ -74,5 +92,9 @@ public class Database {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    private static class Statements {
+        public static String[] createTables = {};
     }
 }
