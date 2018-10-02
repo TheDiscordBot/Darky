@@ -14,7 +14,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.darky.core.Messages.sendMessage;
+import static com.darky.core.Messages.build;
+
 
 /**
  * https://github.com/Stupremee
@@ -52,7 +53,8 @@ public class HelpCommand extends AbstractHelpCommand {
             embed.addField(firstLetterUpperCase(c), String.join(",", list.values()), false);
         });
 
-        sendMessage(database, event.getChannel(), null, null, event.getAuthor(), false, null, embed).queue();
+        event.getChannel().sendMessage(build(database, event.getChannel(),null, null, event.getAuthor(), false, null, embed)).queue();
+
     }
 
     @Override

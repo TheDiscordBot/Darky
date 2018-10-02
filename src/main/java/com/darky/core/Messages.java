@@ -21,27 +21,27 @@ public class Messages {
         return embedBuilder.build();
     }
 
-    public static MessageAction sendMessage(Database database, TextChannel channel, String title) {
-        return channel.sendMessage(buildEmbed(title, null, null, false, null, new EmbedBuilder(), database));
+    public static MessageEmbed build(Database database, TextChannel channel, String title) {
+        return buildEmbed(title, null, null, false, null, new EmbedBuilder(), database);
     }
 
-    public static MessageAction sendMessage(Database database, TextChannel channel, String title, String description) {
-        return channel.sendMessage(buildEmbed(title, description, null, false, null, new EmbedBuilder(), database));
+    public static MessageEmbed build(Database database, TextChannel channel, String title, String description) {
+        return buildEmbed(title, description, null, false, null, new EmbedBuilder(), database);
     }
 
-    public static MessageAction sendMessage(Database database, TextChannel channel, String title, String description, User author) {
-        return channel.sendMessage(buildEmbed(title, description, author, false, null, new EmbedBuilder(), database));
+    public static MessageEmbed build(Database database, TextChannel channel, String title, String description, User author) {
+        return buildEmbed(title, description, author, false, null, new EmbedBuilder(), database);
     }
 
-    public static MessageAction sendMessage(Database database, TextChannel channel, String title, String description, User author, boolean timestamp) {
-        return channel.sendMessage(buildEmbed(title, description, author, timestamp, null, new EmbedBuilder(), database));
+    public static MessageEmbed build(Database database, TextChannel channel, String title, String description, User author, boolean timestamp) {
+        return buildEmbed(title, description, author, timestamp, null, new EmbedBuilder(), database);
     }
 
-    public static MessageAction sendMessage(Database database, TextChannel channel, String title, String description, User author, boolean timestamp, Color color) {
-        return channel.sendMessage(buildEmbed(title, description, author, timestamp, color, new EmbedBuilder(), database));
+    public static MessageEmbed build(Database database, TextChannel channel, String title, String description, User author, boolean timestamp, Color color) {
+        return buildEmbed(title, description, author, timestamp, color, new EmbedBuilder(), database);
     }
 
-    public static MessageAction sendMessage(Database database, TextChannel channel, String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder) {
-        return channel.sendMessage(buildEmbed(title, description, author, timestamp, color, embedBuilder, database));
+    public static MessageEmbed build(Database database, TextChannel channel, String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder) {
+        return buildEmbed(title, description, author, timestamp, color, embedBuilder, database);
     }
 }
