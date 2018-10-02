@@ -18,6 +18,9 @@ import java.nio.file.Paths;
  */
 class Config {
 
+    @SerializedName("PREFIX")
+    @Expose
+    private String prefix;
     @SerializedName("TOKEN")
     @Expose
     private String token;
@@ -60,8 +63,14 @@ class Config {
         } else {
             try {
                 config = config.gson.fromJson(new String(Files.readAllBytes(Paths.get(path))), config.getClass());
-                logger.debug("Config successfully loaded!");
-                return config;
+                if (config.verifyConfig()) {
+                    logger.debug("Config successfully loaded!");
+                    return config;
+                } else {
+                    logger.error("Something in your config is not filled up correctly (Shards count can not be 0)");
+                    System.exit(1);
+                    return null;
+                }
             } catch (IOException e) {
                 logger.error("Error while loading config", e);
                 System.exit(1);
@@ -94,6 +103,15 @@ class Config {
                 System.exit(1);
             }
         }
+    }
+
+    private boolean verifyConfig() {
+        return !(this.token == null || this.shards == 0 || this.db_user == null || this.db_pw == null ||
+                this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null);
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 
     public String getToken() {

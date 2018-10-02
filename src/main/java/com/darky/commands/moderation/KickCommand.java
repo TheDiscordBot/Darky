@@ -1,5 +1,6 @@
 package com.darky.commands.moderation;
 
+import com.darky.util.DescriptionBuilder;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -21,6 +22,9 @@ public class KickCommand implements ICommand {
 
     @Override
     public Message info(Member member, String prefix, Set<String> labels) {
-        return new MessageBuilder("Kick a user").build();
+        return new DescriptionBuilder()
+                .addUsage(prefix, labels, "@Member *Reason*", "Kicks the Member")
+                .addPermission("mod.kick")
+                .build();
     }
 }
