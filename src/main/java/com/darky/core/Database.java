@@ -1,5 +1,7 @@
 package com.darky.core;
 
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +52,35 @@ public class Database {
         }
     }
 
+    public void createifnotexist(User user) {
+        if (this.getFirst("entries", Statements.countUsers, Integer.TYPE, user.getIdLong()) == 0) {
+            this.executeUpdate(Statements.insertUser, user.getIdLong());
+        }
+    }
+
+    public void createifnotexist(Guild guild) {
+        if (this.getFirst("entries", Statements.countGuilds, Integer.TYPE, guild.getIdLong()) == 0) {
+            this.executeUpdate(Statements.insertGuild, guild.getIdLong());
+        }
+    }
+
+    public void createifnotexist(Member member) {
+        createifnotexist(member.getUser());
+        createifnotexist(member.getGuild());
+        if (this.getFirst("entries", Statements.countMembers, Integer.TYPE, member.getGuild().getIdLong(), member.getUser().getIdLong()) == 0) {
+            this.executeUpdate(Statements.insertMember, member.getGuild().getIdLong(), member.getUser().getIdLong());
+        }
+    }
+
     public Color getColor(User user) {
-        return new Color(getFirst("embedcolor", Statements.getColor, Integer.class, user.getIdLong()));
+        try {
+            return (Color) Color.class.getField(getFirst("embedcolor", Statements.selectFromUser, String.class, user.getId()).toUpperCase()).get(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private <T> T getFirst(String column, String sql, Class<T> type, Object... args) {
@@ -105,11 +134,17 @@ public class Database {
     private static class Statements {
         public static String[] createTables = {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(8),PRIMARY KEY (user_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT 'black',PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (member_id BIGINT NOT NULL AUTO_INCREMENT, guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL," +
                     "UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id) ON DELETE CASCADE,FOREIGN KEY (user_id) " +
                     "REFERENCES Discord_user (user_id),PRIMARY KEY (member_id));"
         };
-        public static String getColor = "SELECT * FROM `Discord_user` WHERE `user_id`=?;";
+        public static String selectFromUser = "SELECT * FROM Discord_user WHERE user_id = ?;";
+        public static String insertUser = "INSERT INTO Discord_user (user_id) VALUES (?);";
+        public static String insertGuild = "INSERT INTO Discord_guild (guild_id) VALUE (?);";
+        public static String insertMember = "INSERT INTO Discord_member(guild_id, user_id) VALUES (?, ?);";
+        public static String countUsers = "SELECT COUNT(*) AS entries FROM Discord_user WHERE user_id = ?;";
+        public static String countGuilds = "SELECT COUNT(*) AS entries FROM Discord_guild WHERE guild_id = ?;";
+        public static String countMembers = "SELECT COUNT(*) AS entries FROM Discord_member WHERE guild_id = ? AND user_id = ?;";
     }
 }
