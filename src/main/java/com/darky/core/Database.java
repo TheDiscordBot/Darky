@@ -1,7 +1,11 @@
 package com.darky.core;
 
+import net.dv8tion.jda.core.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.plaf.nimbus.State;
+import java.awt.*;
 import java.sql.*;
 
 import static java.lang.String.format;
@@ -44,6 +48,10 @@ public class Database {
             logger.error("Exception caught while creating tables", e);
             System.exit(1);
         }
+    }
+
+    public Color getColor(User user) {
+        return new Color(getFirst("embedcolor", Statements.getColor, Integer.class, user.getIdLong()));
     }
 
     private <T> T getFirst(String column, String sql, Class<T> type, Object... args) {
@@ -97,10 +105,11 @@ public class Database {
     private static class Statements {
         public static String[] createTables = {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,PRIMARY KEY (user_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(8),PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (member_id BIGINT NOT NULL AUTO_INCREMENT, guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL," +
                     "UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id) ON DELETE CASCADE,FOREIGN KEY (user_id) " +
                     "REFERENCES Discord_user (user_id),PRIMARY KEY (member_id));"
         };
+        public static String getColor = "SELECT * FROM `Discord_user` WHERE `user_id`=?;";
     }
 }
