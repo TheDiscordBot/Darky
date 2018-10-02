@@ -13,11 +13,12 @@ import java.util.Set;
 
 import static com.darky.core.Messages.sendMessage;
 
-public class registerCommand implements ICommand {
+
+public class RegisterCommand implements ICommand {
 
     private Database database;
 
-    public registerCommand(Database database) {
+    public RegisterCommand(Database database) {
         this.database = database;
     }
 
