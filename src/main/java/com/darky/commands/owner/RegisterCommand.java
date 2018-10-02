@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.awt.*;
 import java.util.Set;
 
 import static com.darky.core.Messages.build;

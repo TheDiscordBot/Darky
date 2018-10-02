@@ -2,10 +2,7 @@ package com.darky.listeners;
 
 import com.darky.core.Database;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
-import javax.xml.crypto.Data;
 
 public class RegisterListener extends ListenerAdapter {
 
