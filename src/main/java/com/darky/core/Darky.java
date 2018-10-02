@@ -1,16 +1,19 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+import com.darky.commands.moderation.KickCommand;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
-public class Darky {
+public class Darky extends ListenerAdapter {
 
     private ShardManager shardManager;
     private Config config;
@@ -35,11 +38,15 @@ public class Darky {
             logger.error("Error while building Shard Manager", e);
         }
 
-        CommandSettings settings = new CommandSettings("d!", shardManager, true);
+        CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true);
                 settings.put(new HelpCommand(database), "help", "helpme")
+                        .put(new KickCommand(), "kick")
                 .activate();
-
-        logger.info("Bot successfully started!");
     }
 
+    @Override
+    public void onReady(ReadyEvent event) {
+        System.out.print("Test");
+        logger.info("Bot successfully started! " + event.getJDA().getShardInfo().getShardTotal() + " Shards are online");
+    }
 }

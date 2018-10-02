@@ -6,13 +6,12 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.requests.restaction.MessageAction;
 
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.util.Date;
 
 public class Messages {
 
-    public static MessageEmbed buildEmbed(String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder, Database database) {
+    private static MessageEmbed buildEmbed(String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder, Database database) {
         if (author!=null) embedBuilder.setAuthor(author.getName(), author.getAvatarUrl(), author.getAvatarUrl());
         if (timestamp) embedBuilder.setTimestamp(new Date().toInstant());
         if (title!=null) embedBuilder.setTitle(title);

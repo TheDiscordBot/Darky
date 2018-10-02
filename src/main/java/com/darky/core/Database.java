@@ -4,7 +4,6 @@ import net.dv8tion.jda.core.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.plaf.nimbus.State;
 import java.awt.*;
 import java.sql.*;
 
