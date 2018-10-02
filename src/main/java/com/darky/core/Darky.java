@@ -1,7 +1,12 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+<<<<<<< HEAD
 import com.darky.commands.moderation.KickCommand;
+=======
+import com.darky.commands.owner.registerCommand;
+import com.darky.listeners.RegisterListener;
+>>>>>>> develop
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -37,10 +42,17 @@ public class Darky extends ListenerAdapter {
         } catch (LoginException e) {
             logger.error("Error while building Shard Manager", e);
         }
+<<<<<<< HEAD
 
         CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true);
                 settings.put(new HelpCommand(database), "help", "helpme")
                         .put(new KickCommand(), "kick")
+=======
+        shardManager.addEventListener(new RegisterListener(database));
+        CommandSettings settings = new CommandSettings("d!", shardManager, true);
+                settings.put(new HelpCommand(database), "help", "helpme")
+                        .put(new registerCommand(database), "register")
+>>>>>>> develop
                 .activate();
     }
 
