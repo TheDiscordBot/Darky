@@ -13,6 +13,7 @@ import java.util.Date;
 public class Messages {
 
     public static MessageEmbed buildEmbed(String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder, Database database) {
+        if (embedBuilder==null) embedBuilder = new EmbedBuilder();
         if (author!=null) embedBuilder.setAuthor(author.getName(), author.getAvatarUrl(), author.getAvatarUrl());
         if (timestamp) embedBuilder.setTimestamp(new Date().toInstant());
         if (title!=null) embedBuilder.setTitle(title);

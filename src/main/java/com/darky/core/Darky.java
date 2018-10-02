@@ -1,6 +1,8 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+import com.darky.commands.owner.registerCommand;
+import com.darky.listeners.RegisterListener;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -34,9 +36,10 @@ public class Darky {
         } catch (LoginException e) {
             logger.error("Error while building Shard Manager", e);
         }
-
+        shardManager.addEventListener(new RegisterListener(database));
         CommandSettings settings = new CommandSettings("d!", shardManager, true);
                 settings.put(new HelpCommand(database), "help", "helpme")
+                        .put(new registerCommand(database), "register")
                 .activate();
 
         logger.info("Bot successfully started!");
