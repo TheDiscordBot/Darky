@@ -19,7 +19,7 @@ public class Database {
 
     public Database connect() {
         try {
-            connection = DriverManager.getConnection(config.getDb_host(), config.getDb_user(), config.getDb_pw());
+            connection = DriverManager.getConnection("jdbc:mysql://"+config.getDb_host()+"/?serverTimezone=UTC", config.getDb_user(), config.getDb_pw());
         } catch (SQLException e) {
             logger.error("An Error occurred while connecting to the Database... ", e);
             logger.error("Exiting...");
