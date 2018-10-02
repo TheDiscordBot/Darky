@@ -1,5 +1,6 @@
 package com.darky.commands;
 
+import com.darky.core.Database;
 import com.github.johnnyjayjay.discord.commandapi.AbstractHelpCommand;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
@@ -11,12 +12,21 @@ import net.dv8tion.jda.core.entities.Message;
 import java.awt.*;
 import java.util.*;
 
+import static com.darky.core.Messages.sendMessage;
+
 /**
  * https://github.com/Stupremee
  *
  * @author Stu
  */
 public class HelpCommand extends AbstractHelpCommand {
+
+    private Database database;
+
+    public HelpCommand(Database database) {
+        this.database = database;
+    }
+
     @Override
     public void provideGeneralHelp(CommandEvent event, String prefix, Map<String, ICommand> commands) {
         var embed = new EmbedBuilder().setTitle("HelpCommand").setColor(new Color(52, 73, 94)).setDescription("For more information about a command use " + event.getCommandSettings().getPrefix(event.getGuild().getIdLong()) + "help <Command>\n\n");
@@ -40,7 +50,7 @@ public class HelpCommand extends AbstractHelpCommand {
             embed.addField(firstLetterUpperCase(c), String.join(",", list), false);
         });
 
-        event.respond(embed.build());
+        sendMessage(database, event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
     }
 
     @Override

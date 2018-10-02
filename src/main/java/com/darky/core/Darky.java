@@ -1,5 +1,6 @@
 package com.darky.core;
 
+import com.darky.commands.HelpCommand;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -35,6 +36,8 @@ public class Darky {
         }
 
         CommandSettings settings = new CommandSettings("d!", shardManager, true);
+                settings.put(new HelpCommand(database), "help", "helpme")
+                .activate();
 
         logger.info("Bot successfully started!");
     }
