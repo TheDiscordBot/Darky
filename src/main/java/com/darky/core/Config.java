@@ -1,6 +1,8 @@
 package com.darky.core;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,18 +19,25 @@ import java.nio.file.Paths;
 class Config {
 
     @SerializedName("TOKEN")
+    @Expose
     private String token;
     @SerializedName("SHARDS")
+    @Expose
     private int shards;
     @SerializedName("DB_HOST")
+    @Expose
     private String db_host;
     @SerializedName("DB_PORT")
+    @Expose
     private String db_port;
     @SerializedName("DB_NAME")
+    @Expose
     private String db_name;
     @SerializedName("DB_USER")
+    @Expose
     private String db_user;
     @SerializedName("DB_PW")
+    @Expose
     private String db_pw;
 
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
@@ -38,27 +47,48 @@ class Config {
 
     private Config(String configPath) {
         this.configPath = configPath;
-        this.gson = new Gson();
+        this.gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation().create();
     }
 
     public static Config loadConfig(String path) {
         var config = new Config(path);
-        if (!Files.exists(Paths.get(path)))
+        if (!Files.exists(Paths.get(path))) {
             config.createConfig();
-        try {
-            config = config.gson.fromJson(new String(Files.readAllBytes(Paths.get(path))), config.getClass());
-            logger.debug("Config successfully loaded!");
-        } catch (IOException e) {
-            logger.error("Error while loading config", e);
-            System.exit(1);
+            return null;
+        } else {
+            try {
+                config = config.gson.fromJson(new String(Files.readAllBytes(Paths.get(path))), config.getClass());
+                logger.debug("Config successfully loaded!");
+                return config;
+            } catch (IOException e) {
+                logger.error("Error while loading config", e);
+                System.exit(1);
+                return null;
+            }
         }
-        return config;
+    }
+
+    private void setDefaultValues() {
+        this.db_host = "Database host";
+        this.db_name = "Database name";
+        this.db_port = "Database port";
+        this.db_pw = "Database password";
+        this.db_user = "Database user";
+        this.shards = 1;
+        this.token = "Your token";
     }
 
     private void createConfig() {
         if (!Files.exists(Paths.get(this.configPath))) {
             try {
-                Files.createFile(Paths.get(this.configPath));
+                this.setDefaultValues();
+                var f = Files.createFile(Paths.get(this.configPath));
+                var json = gson.toJson(this, Config.class);
+                Files.write(f, json.getBytes());
+                logger.info("Please fill out the config and restart the Bot!");
+                System.exit(1);
             } catch (IOException e) {
                 logger.error("Error while creating config", e);
                 System.exit(1);
