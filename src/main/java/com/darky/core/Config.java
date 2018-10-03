@@ -16,8 +16,11 @@ import java.nio.file.Paths;
  *
  * @author: Stu
  */
-class Config {
+public class Config {
 
+    @SerializedName("ERROR_CHANNEL")
+    @Expose
+    private long errorChannel;
     @SerializedName("PREFIX")
     @Expose
     private String prefix;
@@ -87,6 +90,7 @@ class Config {
         this.db_user = "Database user";
         this.shards = 1;
         this.token = "Your token";
+        this.errorChannel = 0;
     }
 
     private void createConfig() {
@@ -107,7 +111,7 @@ class Config {
 
     private boolean verifyConfig() {
         return !(this.token == null || this.shards == 0 || this.db_user == null || this.db_pw == null ||
-                this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null);
+                this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null || this.errorChannel == 0);
     }
 
     public String getPrefix() {
@@ -140,5 +144,9 @@ class Config {
 
     public String getDb_port() {
         return db_port;
+    }
+
+    public long getErrorChannel() {
+        return errorChannel;
     }
 }
