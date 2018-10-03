@@ -8,10 +8,9 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.awt.*;
 import java.util.Set;
 
-import static com.darky.core.Messages.sendMessage;
+import static com.darky.core.Messages.build;
 
 
 public class RegisterCommand implements ICommand {
@@ -22,15 +21,20 @@ public class RegisterCommand implements ICommand {
         this.database = database;
     }
 
+    long messageid;
+
     @Override
     public void onCommand(CommandEvent commandEvent, Member member, TextChannel textChannel, String[] strings) {
-        sendMessage(database, textChannel, "Registering all Users and Guilds...", null, null, false, Color.BLACK, null).queue();
-        for (Guild guild:commandEvent.getJDA().asBot().getShardManager().getGuilds()) {
-            for (Member member1:guild.getMembers()) {
-                database.createifnotexist(member1);
-            }
-        }
-        sendMessage(database, textChannel, "Finished!").queue();
+        textChannel.sendMessage(
+                build(database, textChannel, "Registering all Users and Guilds...", null, commandEvent.getAuthor(), false, null, null))
+                .queue(msg -> {
+                    for (Guild guild : commandEvent.getJDA().asBot().getShardManager().getGuilds()) {
+                        for (Member member1 : guild.getMembers()) {
+                            database.createifnotexist(member1);
+                        }
+                    }
+                    msg.editMessage(build(database, textChannel, "Finished!", null, commandEvent.getAuthor(), false, null, null)).queue();
+                });
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
-
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.RegisterListener;
