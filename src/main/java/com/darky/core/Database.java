@@ -51,21 +51,21 @@ public class Database {
         }
     }
 
-    public void createifnotexist(User user) {
+    public void createIfNotExists(User user) {
         if (this.getFirst("entries", Statements.countUsers, Integer.TYPE, user.getIdLong()) == 0) {
             this.executeUpdate(Statements.insertUser, user.getIdLong());
         }
     }
 
-    public void createifnotexist(Guild guild) {
+    public void createIfNotExists(Guild guild) {
         if (this.getFirst("entries", Statements.countGuilds, Integer.TYPE, guild.getIdLong()) == 0) {
             this.executeUpdate(Statements.insertGuild, guild.getIdLong());
         }
     }
 
-    public void createifnotexist(Member member) {
-        createifnotexist(member.getUser());
-        createifnotexist(member.getGuild());
+    public void createIfNotExists(Member member) {
+        createIfNotExists(member.getUser());
+        createIfNotExists(member.getGuild());
         if (this.getFirst("entries", Statements.countMembers, Integer.TYPE, member.getGuild().getIdLong(), member.getUser().getIdLong()) == 0) {
             this.executeUpdate(Statements.insertMember, member.getGuild().getIdLong(), member.getUser().getIdLong());
         }
@@ -73,13 +73,18 @@ public class Database {
 
     public Color getColor(User user) {
         try {
-            return (Color) Color.class.getField(getFirst("embedcolor", Statements.selectFromUser, String.class, user.getId()).toUpperCase()).get(null);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            var s = getFirst("embedcolor", Statements.selectFromUser, String.class, user.getId());
+            return hex2Rgb(s.startsWith("#") ? s : "#" + s);
+        } catch (NullPointerException e) {
+            return Color.BLACK;
         }
-        return null;
+    }
+
+    private static Color hex2Rgb(String colorStr) {
+        return new Color(
+                Integer.valueOf(colorStr.substring(1, 3), 16),
+                Integer.valueOf(colorStr.substring(3, 5), 16),
+                Integer.valueOf(colorStr.substring(5, 7), 16));
     }
 
     private <T> T getFirst(String column, String sql, Class<T> type, Object... args) {
@@ -90,7 +95,7 @@ public class Database {
             if (resultSet != null && resultSet.next())
                 t = resultSet.getObject(column, type);
         } catch (SQLException e) {
-            logger.error("Exception while getting first query",e);
+            logger.error("Exception while getting first query", e);
         }
         return t;
     }
@@ -135,8 +140,8 @@ public class Database {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT 'black',PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (member_id BIGINT NOT NULL AUTO_INCREMENT, guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL," +
-                    "UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id) ON DELETE CASCADE,FOREIGN KEY (user_id) " +
-                    "REFERENCES Discord_user (user_id),PRIMARY KEY (member_id));"
+                        "UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id) ON DELETE CASCADE,FOREIGN KEY (user_id) " +
+                        "REFERENCES Discord_user (user_id),PRIMARY KEY (member_id));"
         };
         public static String selectFromUser = "SELECT * FROM Discord_user WHERE user_id = ?;";
         public static String insertUser = "INSERT INTO Discord_user (user_id) VALUES (?);";

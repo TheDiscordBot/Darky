@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.darky.core.Messages.build;
+import static com.darky.core.Messages.sendMessage;
 
 
 /**
@@ -54,7 +54,7 @@ public class HelpCommand extends AbstractHelpCommand {
             embed.addField(firstLetterUpperCase(c), String.join(",", list.values()), false);
         });
 
-        event.getChannel().sendMessage(build(database, event.getChannel(),null, null, event.getAuthor(), false, null, embed)).queue();
+        sendMessage(database, event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
 
     }
 

@@ -14,8 +14,8 @@ public class RegisterListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        database.createifnotexist(event.getUser());
-        database.createifnotexist(event.getGuild());
-        database.createifnotexist(event.getMember());
+        database.createIfNotExists(event.getUser());
+        database.createIfNotExists(event.getGuild());
+        database.createIfNotExists(event.getMember());
     }
 }
