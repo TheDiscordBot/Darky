@@ -28,7 +28,7 @@ public class Database {
                 format("jdbc:mysql://%s:%s/?serverTimezone=UTC&useSSL=false", config.getDb_host(), config.getDb_port()), config.getDb_user(), config.getDb_pw());
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.executeUpdate();
-            this.connection = DriverManager.getConnection(format("jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", config.getDb_host(), config.getDb_port(), config.getDb_name()), config.getDb_user(), config.getDb_pw());
+            this.connection = DriverManager.getConnection(format("jdbc:mysql://%s:%s/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", config.getDb_host(), config.getDb_port(), config.getDb_name()), config.getDb_user(), config.getDb_pw());
         } catch (SQLException e) {
             logger.error("Exception caught while connecting", e);
             System.exit(1);
