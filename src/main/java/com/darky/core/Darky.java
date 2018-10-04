@@ -41,7 +41,7 @@ public class Darky extends ListenerAdapter {
             logger.error("Error while building Shard Manager", e);
         }
 
-        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database));
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager));
         CommandSettings settings = new CommandSettings("d!", shardManager, true);
                 settings.put(new HelpCommand(database), "help", "helpme")
                         .put(new KickCommand(), "kick")
