@@ -42,7 +42,7 @@ public class Darky extends ListenerAdapter {
         }
 
         shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager));
-        CommandSettings settings = new CommandSettings("d!", shardManager, true);
+        CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
                 settings.put(new HelpCommand(database), "help", "helpme")
                         .put(new KickCommand(), "kick")
                         .put(new RegisterCommand(database), "register")
