@@ -20,6 +20,29 @@
         </plugins>
     </build>
 
+    <developers>
+        <developer>
+            <id>Hax#6775</id>
+            <name>Hax</name>
+            <email>hax@bigbotnetwork.de</email>
+            <url>https://hax.bigbotnetwork.de/</url>
+            <timezone>Europe/Berlin</timezone>
+            <properties>
+                <picUrl>https://hax.bigbotnetwork.de/images/avatar.jpg</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>Stu#9999</id>
+            <name>Stu</name>
+            <email>stu@stupreme.de</email>
+            <url>http://www.stupreme.de/index.html</url>
+            <timezone>Europe/Berlin</timezone>
+            <properties>
+                <picUrl>http://images.stupreme.de/pb.gif</picUrl>
+            </properties>
+        </developer>
+    </developers>
+
     <repositories>
         <repository>
             <id>jcenter</id>
@@ -27,6 +50,7 @@
             <url>http://jcenter.bintray.com</url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -62,6 +86,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.5.4</version>
         </dependency>
     </dependencies>
 </project>
