@@ -13,11 +13,13 @@ import java.nio.file.Paths;
 
 /**
  * https://github.com/Stupremee
- *
  * @author: Stu
  */
 public class Config {
 
+    @SerializedName("THREAD_POOL")
+    @Expose
+    private int threadPool;
     @SerializedName("ERROR_CHANNEL")
     @Expose
     private long errorChannel;
@@ -58,7 +60,7 @@ public class Config {
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 
-    public static Config loadConfig(String path) {
+    static Config loadConfig(String path) {
         var config = new Config(path);
         if (!Files.exists(Paths.get(path))) {
             config.createConfig();
@@ -111,7 +113,8 @@ public class Config {
 
     private boolean verifyConfig() {
         return !(this.token == null || this.shards == 0 || this.db_user == null || this.db_pw == null ||
-                this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null || this.errorChannel == 0);
+                this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null || this.errorChannel == 0 ||
+                this.threadPool == 0);
     }
 
     public String getPrefix() {
@@ -148,5 +151,9 @@ public class Config {
 
     public long getErrorChannel() {
         return errorChannel;
+    }
+
+    public int getThreadPool() {
+        return threadPool;
     }
 }

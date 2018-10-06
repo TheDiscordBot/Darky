@@ -48,27 +48,27 @@ public class Messages {
 
     // ----------------------------------------------------------------------------------------------------------------------------------------
 
-    public static MessageAction editMessage(Message msg, Database database, TextChannel channel, String title) {
+    public static MessageAction editMessage(Message msg, Database database, String title) {
         return msg.editMessage(buildEmbed(title, null, null, false, null, new EmbedBuilder(), database));
     }
 
-    public static MessageAction editMessage(Message msg, Database database, TextChannel channel, String title, String description) {
+    public static MessageAction editMessage(Message msg, Database database, String title, String description) {
         return msg.editMessage(buildEmbed(title, description, null, false, null, new EmbedBuilder(), database));
     }
 
-    public static MessageAction editMessage(Message msg, Database database, TextChannel channel, String title, String description, User author) {
+    public static MessageAction editMessage(Message msg, Database database, String title, String description, User author) {
         return msg.editMessage(buildEmbed(title, description, author, false, null, new EmbedBuilder(), database));
     }
 
-    public static MessageAction editMessage(Message msg, Database database, TextChannel channel, String title, String description, User author, boolean timestamp) {
+    public static MessageAction editMessage(Message msg, Database database, String title, String description, User author, boolean timestamp) {
         return msg.editMessage(buildEmbed(title, description, author, timestamp, null, new EmbedBuilder(), database));
     }
 
-    public static MessageAction editMessage(Message msg, Database database, TextChannel channel, String title, String description, User author, boolean timestamp, Color color) {
+    public static MessageAction editMessage(Message msg, Database database, String title, String description, User author, boolean timestamp, Color color) {
         return msg.editMessage(buildEmbed(title, description, author, timestamp, color, new EmbedBuilder(), database));
     }
 
-    public static MessageAction editMessage(Message msg, Database database, TextChannel channel, String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder) {
+    public static MessageAction editMessage(Message msg, Database database, String title, String description, User author, boolean timestamp, Color color, EmbedBuilder embedBuilder) {
         return msg.editMessage(buildEmbed(title, description, author, timestamp, color, embedBuilder, database));
     }
 }
