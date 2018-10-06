@@ -50,14 +50,10 @@ class CommandListener extends ListenerAdapter {
                         cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings),
                                 event.getMember(), channel, cmd.getArgs());
                     } catch (Throwable t) {
-<<<<<<< HEAD
                         event.getChannel().sendMessage(new EmbedBuilder()
                                 .setColor(Color.RED)
                                 .setDescription("An unknown error occurred. The developers will try to fix it").build()).queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
-
-=======
-                        t.printStackTrace();
->>>>>>> develop
+                        
                         event.getJDA().getTextChannelById(config.getErrorChannel()).sendMessage(new EmbedBuilder()
                                 .setTitle("Error")
                                 .setDescription("**__User:__** " + event.getMember().getAsMention() + " `(" + event.getMember().getUser().getId() + ")`\n" +
