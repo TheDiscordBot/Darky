@@ -1,7 +1,7 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
-import com.darky.commands.misc.InviteCommand;
+import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.RegisterListener;
@@ -55,9 +55,9 @@ public class Darky extends ListenerAdapter {
 
         CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config);
         settings.put(new HelpCommand(database), "help", "helpme")
-                .put(new KickCommand(), "kick")
+                .put(new KickCommand(database), "kick")
                 .put(new RegisterCommand(database), "register")
-                .put(new InviteCommand(reactions, database), "invite")
+                .put(new LinksCommand(reactions, database), "invite", "links")
                 .activate();
     }
 

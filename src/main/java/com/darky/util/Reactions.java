@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 public class Reactions extends ListenerAdapter {
     public static final String YES_EMOTE = "✅";
     public static final String NO_EMOTE = "❌";
-
+    public static final String ROBOT = "\uD83E\uDD16";
+    public static final String GITHUB = "<:GitHub:498000368366518272>";
+    public static final String DISCORD_ICON = "<:DiscordIcon:497999830971449344>";
 
     private List<Menu> menus;
     private boolean firstReaction = true;
@@ -32,8 +34,28 @@ public class Reactions extends ListenerAdapter {
         this.menus = new ArrayList<>();
     }
 
-    /*public void newMenu(User[] user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
-    }*/
+    public void newYesNoMenu(User[] user, Message msg, Consumer<User> yes, Consumer<User> no, Consumer<Void> aborted, int duration, boolean remove) {
+        menus.add(new Menu(Arrays.stream(user).map(User::getIdLong).toArray(Long[]::new), msg.getIdLong(), List.of(Reactions.YES_EMOTE, Reactions.NO_EMOTE), (emote, u) -> {
+            if (emote.equals(Reactions.YES_EMOTE))
+                yes.accept(u);
+            else if (emote.equals(Reactions.NO_EMOTE))
+                no.accept(u);
+        }, aborted, duration, remove));
+    }
+
+    public void newYesNoMenu(User user, Message msg, Consumer<User> yes, Consumer<User> no, Consumer<Void> aborted, int duration, boolean remove) {
+        menus.add(new Menu(new Long[]{user.getIdLong()}, msg.getIdLong(), List.of(Reactions.YES_EMOTE, Reactions.NO_EMOTE), (emote, u) -> {
+            if (emote.equals(Reactions.YES_EMOTE))
+                yes.accept(u);
+            else if (emote.equals(Reactions.NO_EMOTE))
+                no.accept(u);
+        }, aborted, duration, remove));
+    }
+
+    public void newMenu(User[] user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
+        emotes.forEach(e -> msg.addReaction(e).queue());
+        menus.add(new Menu(Arrays.stream(user).map(User::getIdLong).toArray(Long[]::new), msg.getIdLong(), emotes, reacted, aborted, duration, remove));
+    }
 
     public void newMenu(User user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
         emotes.forEach(e -> msg.addReaction(e).queue());
