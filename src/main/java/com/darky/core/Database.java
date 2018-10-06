@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static java.lang.String.format;
 
@@ -77,9 +80,18 @@ public class Database {
         return split;
     }
 
-    // TODO:
+    public void addPermissions(Member member, String... permissions) {
+        var perms = Arrays.asList(this.getPermissions(member));
+        var permsarraylist = new ArrayList<>(perms);
+        Collections.addAll(permsarraylist, permissions);
+        this.executeUpdate(Statements.updatePerms, Arrays.toString(permsarraylist.toArray()).replace("[", "").replace("]", ""), member.getGuild().getIdLong(), member.getUser().getIdLong());
+    }
 
-    public String[] addPermission(Member member) {
+    public void removePermissions(Member member, String... permissions) {
+        var perms = Arrays.asList(this.getPermissions(member));
+        var permsarraylist = new ArrayList<>(perms);
+        permsarraylist.removeAll(Arrays.asList(permissions));
+        this.executeUpdate(Statements.updatePerms, Arrays.toString(permsarraylist.toArray()).replace("[", "").replace("]", ""), member.getGuild().getIdLong(), member.getUser().getIdLong());
     }
 
     public Color getColor(User user) {
