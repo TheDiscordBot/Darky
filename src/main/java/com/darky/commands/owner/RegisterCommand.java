@@ -30,12 +30,7 @@ public class RegisterCommand implements ICommand {
                     database.createIfNotExists(member1);
                 }
             }
-            editMessage(m, database, textChannel, "Finished!", null, commandEvent.getAuthor(), false, null, null).queue();
+            editMessage(m, database, "Finished!", null, commandEvent.getAuthor(), false, null, null).queue();
         });
-    }
-
-    @Override
-    public Message info(Member member, String prefix, Set<String> labels) {
-        return null;
     }
 }

@@ -65,7 +65,9 @@ public class HelpCommand extends AbstractHelpCommand {
 
     @Override
     public Message info(Member member, String prefix, Set<String> labels) {
-        return new DescriptionBuilder().addUsage(prefix, labels, "", "Shows the help message")
+        return new DescriptionBuilder()
+                .setColor(database.getColor(member.getUser()))
+                .addUsage(prefix, labels, "", "Shows the help message")
                 .addUsage(prefix, labels, "<command>", "Shows more information about the command")
                 .build();
     }
