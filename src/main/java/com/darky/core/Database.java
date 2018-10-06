@@ -161,10 +161,9 @@ public class Database {
     private static class Statements {
         public static String[] createTables = {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT 'black',PRIMARY KEY (user_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,permissions VARCHAR(80)," +
-                        "UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id) ON DELETE CASCADE,FOREIGN KEY (user_id) " +
-                        "REFERENCES Discord_user (user_id));"
+                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',PRIMARY KEY (user_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
+                        " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));"
         };
         public static String selectFromUser = "SELECT * FROM Discord_user WHERE user_id = ?;";
         public static String selectFromMember = "SELECT * FROM Discord_member WHERE user_id = ? AND guild_id = ?;";
