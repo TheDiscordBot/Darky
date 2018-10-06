@@ -1,6 +1,7 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.MentionListener;
@@ -17,10 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class Darky extends ListenerAdapter {
 
@@ -51,17 +54,23 @@ public class Darky extends ListenerAdapter {
             logger.error("Error while building Shard Manager", e);
         }
 
-        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions);
-        CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
-                settings.put(new HelpCommand(database), "help", "helpme")
-                        .put(new KickCommand(database), "kick")
-                        .put(new RegisterCommand(database), "register")
-                        .activate();
-        Emotes.init("./emotes", shardManager.getGuildById(config.getEmoteGuild()));
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions, this);
+        CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config);
+        settings.put(new HelpCommand(database), "help", "helpme")
+                .put(new KickCommand(database), "kick")
+                .put(new RegisterCommand(database), "register")
+                .put(new LinksCommand(reactions, database), "links")
+                .activate();
     }
 
     @Override
     public void onReady(ReadyEvent event) {
+        try {
+            Emotes.init("./emotes", event.getJDA().getGuildById(config.getEmoteGuild()));
+            logger.info("Emotes successfully uploaded");
+        } catch (IOException e) {
+            logger.error("Error while uploading emotes", e);
+        }
         logger.info("Bot successfully started! " + event.getJDA().getShardInfo().getShardTotal() + " Shards are online");
     }
 

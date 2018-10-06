@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,26 +20,26 @@ public class Emotes {
     private static List<Emote> emotes;
     private static final Logger logger = LoggerFactory.getLogger(Emotes.class);
 
-    public static void init(String emotePath, Guild guild) {
+    public static void init(String emotePath, Guild guild) throws IOException {
         var files = new File(emotePath).listFiles();
 
         assert files != null;
         for (var f : files) {
             if (!f.isDirectory()) {
-                System.out.println(f.getName());
                 var name = f.getName().substring(0, f.getName().indexOf('.'));
                 try {
-                    if ((guild.getEmotesByName(name, true).size() > 0)) {
+                    if ((guild.getEmotesByName(name, true).size() == 0)) {
                         guild.getController().createEmote(name, Icon.from(f)).queue();
                     }
-                } catch (IOException e) {
-                    logger.error("Error while uploading emotes", e);
+                } catch (NullPointerException e) {
+                    guild.getController().createEmote(name, Icon.from(f)).queue();
                 }
             }
         }
-
-        for (var emote: guild.getEmotes()) {
-            emotes.add(new Emote(emote.getIdLong(), emote.getAsMention(), emote.getAsMention().replaceAll("(<)|(>)", ""), ""));
+        emotes = new ArrayList<>();
+        for (var emote : guild.getEmotes()) {
+            emotes.add(new Emote(emote.getIdLong(), emote.getAsMention().replaceAll("(<)|(>)", ""),
+                    emote.getAsMention(), emote.getName()));
         }
     }
 

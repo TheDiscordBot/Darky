@@ -78,13 +78,12 @@ public class Reactions extends ListenerAdapter {
             firstReaction = false;
         }
 
-        System.out.println(event.getReactionEmote().getEmote().getAsMention());
         String emote;
         if (event.getReactionEmote().getEmote() == null)
             emote = event.getReactionEmote().getName();
         else
             emote = Emotes.getFromMention(event.getReactionEmote().getEmote().getAsMention()).getAsReaction();
-
+        System.out.println(emote);
 
         if (Arrays.asList(menu.user).contains(event.getUser().getIdLong()) && menu.emotes.contains(emote)) {
             menu.reacted.accept(emote, event.getUser());
