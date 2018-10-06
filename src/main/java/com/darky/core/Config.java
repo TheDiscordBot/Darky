@@ -115,7 +115,7 @@ public class Config {
     }
 
     private boolean verifyConfig() {
-        return !(this.token == null || this.shards == 0 || this.db_user == null || this.db_pw == null ||
+        return !(this.token == null || this.shards == 0 || this.db_user == null ||
                 this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null || this.errorChannel == 0 ||
                 this.threadPool == 0 || this.emoteGuild == 0);
     }

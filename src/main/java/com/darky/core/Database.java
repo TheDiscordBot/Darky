@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static java.lang.String.format;
 
@@ -69,6 +72,26 @@ public class Database {
         if (this.getFirst("entries", Statements.countMembers, Integer.TYPE, member.getGuild().getIdLong(), member.getUser().getIdLong()) == 0) {
             this.executeUpdate(Statements.insertMember, member.getGuild().getIdLong(), member.getUser().getIdLong());
         }
+    }
+
+    public String[] getPermissions(Member member) {
+        var s = getFirst("permissions", Statements.selectFromMember, String.class, member.getUser().getIdLong(), member.getUser().getIdLong() == 0);
+        var split = s.split(",");
+        return split;
+    }
+
+    public void addPermissions(Member member, String... permissions) {
+        var perms = Arrays.asList(this.getPermissions(member));
+        var permsarraylist = new ArrayList<>(perms);
+        Collections.addAll(permsarraylist, permissions);
+        this.executeUpdate(Statements.updatePerms, Arrays.toString(permsarraylist.toArray()).replace("[", "").replace("]", ""), member.getGuild().getIdLong(), member.getUser().getIdLong());
+    }
+
+    public void removePermissions(Member member, String... permissions) {
+        var perms = Arrays.asList(this.getPermissions(member));
+        var permsarraylist = new ArrayList<>(perms);
+        permsarraylist.removeAll(Arrays.asList(permissions));
+        this.executeUpdate(Statements.updatePerms, Arrays.toString(permsarraylist.toArray()).replace("[", "").replace("]", ""), member.getGuild().getIdLong(), member.getUser().getIdLong());
     }
 
     public Color getColor(User user) {
@@ -143,11 +166,13 @@ public class Database {
                         " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));"
         };
         public static String selectFromUser = "SELECT * FROM Discord_user WHERE user_id = ?;";
+        public static String selectFromMember = "SELECT * FROM Discord_member WHERE user_id = ? AND guild_id = ?;";
         public static String insertUser = "INSERT INTO Discord_user (user_id) VALUES (?);";
         public static String insertGuild = "INSERT INTO Discord_guild (guild_id) VALUE (?);";
         public static String insertMember = "INSERT INTO Discord_member(guild_id, user_id) VALUES (?, ?);";
         public static String countUsers = "SELECT COUNT(*) AS entries FROM Discord_user WHERE user_id = ?;";
         public static String countGuilds = "SELECT COUNT(*) AS entries FROM Discord_guild WHERE guild_id = ?;";
         public static String countMembers = "SELECT COUNT(*) AS entries FROM Discord_member WHERE guild_id = ? AND user_id = ?;";
+        public static String updatePerms = "UPDATE Discord_member SET permissions = ? WHERE guild_id = ? AND user_id = ?;";
     }
 }
