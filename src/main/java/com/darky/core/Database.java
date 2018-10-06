@@ -1,5 +1,6 @@
 package com.darky.core;
 
+import com.darky.core.entities.Miner;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
@@ -11,6 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -52,6 +54,27 @@ public class Database {
             logger.error("Exception caught while creating tables", e);
             System.exit(1);
         }
+    }
+
+    public List<Miner> getAllMiners() {
+        ArrayList<Miner> miners = new ArrayList<>();
+        try (var statement = connection.prepareStatement("SELECT * FROM `Darkcoin`")) {
+            var set = statement.executeQuery();
+            while (set.next()) {
+                miners.add(new Miner(set.getLong("user_id"), set.getLong("minedcoins"), set.getLong("chance"), set.getLong("miner_id")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return miners;
+    }
+
+    public void setMiner(Miner miner) {
+        this.executeUpdate(Statements.updateMiner, miner.getMinedcoins(), miner.getChance(), miner.getMiner_id());
+    }
+
+    public void insertMiner(long user_id) {
+        this.executeUpdate(Statements.insertMiner, user_id);
     }
 
     public void createIfNotExists(User user) {
@@ -163,7 +186,9 @@ public class Database {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
-                        " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));"
+                        " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));",
+                "CREATE TABLE IF NOT EXISTS Darkcoin (user_id BIGINT NOT NULL,minedcoins BIGINT NOT NULL DEFAULT '0',chance BIGINT NOT NULL DEFAULT '1',miner_id BIGINT NOT NULL AUTO_INCREMENT," +
+                        "FOREIGN KEY (user_id) REFERENCES Discord_user (user_id),PRIMARY KEY (miner_id));"
         };
         public static String selectFromUser = "SELECT * FROM Discord_user WHERE user_id = ?;";
         public static String selectFromMember = "SELECT * FROM Discord_member WHERE user_id = ? AND guild_id = ?;";
@@ -174,5 +199,7 @@ public class Database {
         public static String countGuilds = "SELECT COUNT(*) AS entries FROM Discord_guild WHERE guild_id = ?;";
         public static String countMembers = "SELECT COUNT(*) AS entries FROM Discord_member WHERE guild_id = ? AND user_id = ?;";
         public static String updatePerms = "UPDATE Discord_member SET permissions = ? WHERE guild_id = ? AND user_id = ?;";
+        public static String updateMiner = "UPDATE Darkcoin SET minedcoins=?, chance=? WHERE miner_id = ?;";
+        public static String insertMiner = "INSERT INTO Darkcoin (user_id) VALUES (?);";
     }
 }

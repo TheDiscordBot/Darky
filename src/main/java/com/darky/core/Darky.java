@@ -1,9 +1,11 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+import com.darky.commands.MinerCommand;
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
+import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.RegisterListener;
 import com.darky.util.Reactions;
@@ -51,11 +53,12 @@ public class Darky extends ListenerAdapter {
             logger.error("Error while building Shard Manager", e);
         }
 
-        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions);
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions, new DarkcoinListener(database));
         CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
                 settings.put(new HelpCommand(database), "help", "helpme")
                         .put(new KickCommand(database), "kick")
                         .put(new RegisterCommand(database), "register")
+                        .put(new MinerCommand(database), "miner")
                         .activate();
     }
 
