@@ -48,6 +48,7 @@ class CommandListener extends ListenerAdapter {
                         cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings),
                                 event.getMember(), channel, cmd.getArgs());
                     } catch (Throwable t) {
+                        t.printStackTrace();
                         event.getJDA().getTextChannelById(config.getErrorChannel()).sendMessage(new EmbedBuilder()
                                 .setTitle("Error")
                                 .setDescription("**__User:__** " + event.getMember().getAsMention() + " `(" + event.getMember().getUser().getId() + ")`\n" +
