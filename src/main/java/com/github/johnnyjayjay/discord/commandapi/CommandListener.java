@@ -8,9 +8,11 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -48,13 +50,17 @@ class CommandListener extends ListenerAdapter {
                         cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings),
                                 event.getMember(), channel, cmd.getArgs());
                     } catch (Throwable t) {
+                        event.getChannel().sendMessage(new EmbedBuilder()
+                                .setColor(Color.RED)
+                                .setDescription("An unknown error occurred. The developers will try to fix it").build()).queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
+
                         event.getJDA().getTextChannelById(config.getErrorChannel()).sendMessage(new EmbedBuilder()
                                 .setTitle("Error")
                                 .setDescription("**__User:__** " + event.getMember().getAsMention() + " `(" + event.getMember().getUser().getId() + ")`\n" +
                                         "**__Guild:__** " + event.getGuild().getName() + " `(" + event.getGuild().getId() + ")`\n" +
                                         "**__Command:__** " + cmd.getLabel())
                                 .addField("Error", "```css\n" + t.toString() + "\n```", false)
-                                .addField("Stacktrace", String.join("\n", Arrays.toString(Arrays.copyOfRange(t.getStackTrace(), 0, 5))), false).build()).queue();
+                                .addField("Stacktrace", String.join("\n", Arrays.toString(Arrays.copyOfRange(t.getStackTrace(), 0, 10))), false).build()).queue();
                     }
                 } else {
                     Message unknownCommand = settings.getUnknownCommandMessage();
