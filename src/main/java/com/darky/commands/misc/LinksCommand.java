@@ -3,6 +3,8 @@ package com.darky.commands.misc;
 import com.darky.core.Database;
 import com.darky.util.DescriptionBuilder;
 import com.darky.util.Reactions;
+import com.darky.util.emotes.Emote;
+import com.darky.util.emotes.Emotes;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -33,10 +35,10 @@ public class LinksCommand implements ICommand {
     @Override // https://discord.gg/Q6tXZEp
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
         sendMessage(database, channel, "Invite Links", "Here is the right place if you want some links!\n\n" +
-                "React with:\n" + Reactions.DISCORD_ICON + " to get a invite to the support server\n" +
-                Reactions.GITHUB + " to get the GitHub organisation link\n" +
+                "React with:\n" + Emotes.getFromName("DiscordIcon") + " to get a invite to the support server\n" +
+                Emotes.getFromName("GitHub") + " to get the GitHub organisation link\n" +
                 Reactions.ROBOT + " to get the Bot Invite\n", member.getUser(), true, null, new EmbedBuilder().setFooter("You have 30 seconds to react", null)).queue(msg -> {
-                    reactions.newMenu(member.getUser(), msg, List.of(Reactions.DISCORD_ICON.replaceAll("(<)|(>)", ""), Reactions.GITHUB.replaceAll("(<)|(>)", ""), Reactions.ROBOT), (emote, user) -> {
+                    reactions.newMenu(member.getUser(), msg, List.of(Emotes.getFromName("DiscordIcon").getAsReaction(), Emotes.getFromName("GitHub").getAsReaction(), Reactions.ROBOT), (emote, user) -> {
                         switch (emote) {
                             case Reactions.DISCORD_ICON:
                                 editMessage(msg, database, "Invite Links!", "[Here](https://discord.gg/Q6tXZEp) is the link for the support server", member.getUser()).queue();

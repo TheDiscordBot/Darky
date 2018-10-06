@@ -1,6 +1,7 @@
 package com.darky.util;
 
 import com.darky.core.Darky;
+import com.darky.util.emotes.Emotes;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -24,8 +25,6 @@ public class Reactions extends ListenerAdapter {
     public static final String YES_EMOTE = "✅";
     public static final String NO_EMOTE = "❌";
     public static final String ROBOT = "\uD83E\uDD16";
-    public static final String GITHUB = "<:GitHub:498000368366518272>";
-    public static final String DISCORD_ICON = "<:DiscordIcon:497999830971449344>";
 
     private List<Menu> menus;
     private boolean firstReaction = true;
@@ -79,7 +78,14 @@ public class Reactions extends ListenerAdapter {
             firstReaction = false;
         }
 
-        var emote = event.getReactionEmote().getName();
+        System.out.println(event.getReactionEmote().getEmote().getAsMention());
+        String emote;
+        if (event.getReactionEmote().getEmote() == null)
+            emote = event.getReactionEmote().getName();
+        else
+            emote = Emotes.getFromMention(event.getReactionEmote().getEmote().getAsMention()).getAsReaction();
+
+
         if (Arrays.asList(menu.user).contains(event.getUser().getIdLong()) && menu.emotes.contains(emote)) {
             menu.reacted.accept(emote, event.getUser());
             event.getReaction().removeReaction(event.getUser()).queue();

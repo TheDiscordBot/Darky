@@ -1,11 +1,11 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
-import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.RegisterListener;
+import com.darky.util.emotes.Emotes;
 import com.darky.util.Reactions;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -57,6 +57,7 @@ public class Darky extends ListenerAdapter {
                         .put(new KickCommand(database), "kick")
                         .put(new RegisterCommand(database), "register")
                         .activate();
+        Emotes.init("./emotes", shardManager.getGuildById(config.getEmoteGuild()));
     }
 
     @Override
