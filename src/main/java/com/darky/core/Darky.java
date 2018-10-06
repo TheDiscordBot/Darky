@@ -29,7 +29,7 @@ public class Darky extends ListenerAdapter {
     private Reactions reactions;
     private Logger logger = LoggerFactory.getLogger(Darky.class);
     private Database database;
-    private static ScheduledExecutorService executer;
+    private static ScheduledExecutorService executor;
 
     public static void main(String[] args) {
         new Darky().run();
@@ -39,7 +39,7 @@ public class Darky extends ListenerAdapter {
         this.reactions = new Reactions();
         this.config = Config.loadConfig("config.json");
         this.database = new Database(config).connect();
-        executer = Executors.newScheduledThreadPool(config.getThreadPool());
+        executor = Executors.newScheduledThreadPool(config.getThreadPool());
 
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(config.getToken())
@@ -51,32 +51,20 @@ public class Darky extends ListenerAdapter {
             logger.error("Error while building Shard Manager", e);
         }
 
-<<<<<<< HEAD
-        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager));
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions);
         CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
                 settings.put(new HelpCommand(database), "help", "helpme")
-                        .put(new KickCommand(), "kick")
+                        .put(new KickCommand(database), "kick")
                         .put(new RegisterCommand(database), "register")
-=======
-        shardManager.addEventListener(this.reactions);
-        shardManager.addEventListener(new RegisterListener(database));
-
-        CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config);
-        settings.put(new HelpCommand(database), "help", "helpme")
-                .put(new KickCommand(database), "kick")
-                .put(new RegisterCommand(database), "register")
-                .put(new LinksCommand(reactions, database), "invite", "links")
->>>>>>> reactions
-                .activate();
+                        .activate();
     }
 
     @Override
     public void onReady(ReadyEvent event) {
-        System.out.print("Test");
         logger.info("Bot successfully started! " + event.getJDA().getShardInfo().getShardTotal() + " Shards are online");
     }
 
     public static ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit timeUnit) {
-        return executer.schedule(task, delay, timeUnit);
+        return executor.schedule(task, delay, timeUnit);
     }
 }
