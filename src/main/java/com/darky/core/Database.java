@@ -97,6 +97,14 @@ public class Database {
         }
     }
 
+    public long getCoins(User user) {
+        return this.getFirst("coins", Statements.selectFromUser, Long.TYPE, user.getIdLong());
+    }
+
+    public void setCoins(User user, long coins) {
+        this.executeUpdate(Statements.setCoins, coins, user.getIdLong());
+    }
+
     public String[] getPermissions(Member member) {
         var s = getFirst("permissions", Statements.selectFromMember, String.class, member.getUser().getIdLong(), member.getUser().getIdLong() == 0);
         var split = s.split(",");
@@ -184,7 +192,7 @@ public class Database {
     private static class Statements {
         public static String[] createTables = {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',PRIMARY KEY (user_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',coins BIGINT NOT NULL DEFAULT '0',PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
                         " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));",
                 "CREATE TABLE IF NOT EXISTS Darkcoin (user_id BIGINT NOT NULL,minedcoins BIGINT NOT NULL DEFAULT '0',chance BIGINT NOT NULL DEFAULT '1',miner_id BIGINT NOT NULL AUTO_INCREMENT," +
@@ -201,5 +209,6 @@ public class Database {
         public static String updatePerms = "UPDATE Discord_member SET permissions = ? WHERE guild_id = ? AND user_id = ?;";
         public static String updateMiner = "UPDATE Darkcoin SET minedcoins=?, chance=? WHERE miner_id = ?;";
         public static String insertMiner = "INSERT INTO Darkcoin (user_id) VALUES (?);";
+        public static String setCoins = "UPDATE Discord_user SET coins = ? WHERE user_id = ?;";
     }
 }
