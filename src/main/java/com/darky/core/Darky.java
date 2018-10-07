@@ -57,15 +57,6 @@ public class Darky extends ListenerAdapter {
         } catch (LoginException e) {
             logger.error("Error while building Shard Manager", e);
         }
-        GitHub github = null;
-        GHRepository repo = null;
-        try {
-            github = GitHub.connectUsingOAuth(config.getGithubtoken());
-            GHOrganization org = github.getOrganization("TheDiscordBot");
-            repo = org.getRepository("Darky");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         shardManager.addEventListener(new RegisterListener(database), new MentionListener(database), this.reactions, new DarkcoinListener(database));
         CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
@@ -73,7 +64,6 @@ public class Darky extends ListenerAdapter {
                 .put(new KickCommand(database), "kick")
                 .put(new RegisterCommand(database), "register")
                 .put(new MinerCommand(database), "miner")
-                .put(new RepoCommand(repo, database), "repo")
                 .activate();
 
     }
