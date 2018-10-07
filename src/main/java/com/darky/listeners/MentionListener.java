@@ -20,11 +20,9 @@ import java.sql.PreparedStatement;
 public class MentionListener extends ListenerAdapter {
 
     private Database database;
-    private ShardManager shardManager;
 
-    public MentionListener(Database database, ShardManager shardManager) {
+    public MentionListener(Database database) {
         this.database = database;
-        this.shardManager = shardManager;
     }
 
     @Override

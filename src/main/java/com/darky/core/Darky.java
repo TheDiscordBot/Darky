@@ -2,8 +2,6 @@ package com.darky.core;
 
 import com.darky.commands.HelpCommand;
 import com.darky.commands.MinerCommand;
-import com.darky.commands.RepoCommand;
-import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.DarkcoinListener;
@@ -16,9 +14,6 @@ import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import org.kohsuke.github.GHOrganization;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
