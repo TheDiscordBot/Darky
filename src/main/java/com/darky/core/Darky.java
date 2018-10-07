@@ -1,6 +1,11 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+<<<<<<< Updated upstream
+=======
+import com.darky.commands.MinerCommand;
+import com.darky.commands.RepoCommand;
+>>>>>>> Stashed changes
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
@@ -13,10 +18,14 @@ import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.kohsuke.github.GHOrganization;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -50,6 +59,15 @@ public class Darky extends ListenerAdapter {
         } catch (LoginException e) {
             logger.error("Error while building Shard Manager", e);
         }
+        GitHub github = null;
+        GHRepository repo = null;
+        try {
+            github = GitHub.connectUsingOAuth(config.getGithubtoken());
+            GHOrganization org = github.getOrganization("TheDiscordBot");
+            repo = org.getRepository("Darky");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions);
         CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
@@ -57,6 +75,14 @@ public class Darky extends ListenerAdapter {
                         .put(new KickCommand(database), "kick")
                         .put(new RegisterCommand(database), "register")
                         .activate();
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database), this.reactions, new DarkcoinListener(database));
+        CommandSettings settings = new CommandSettings("d!", shardManager, true, config);
+        settings.put(new HelpCommand(database), "help", "helpme")
+                .put(new KickCommand(database), "kick")
+                .put(new RegisterCommand(database), "register")
+                .put(new RepoCommand(repo, database), "repo")
+                .activate();
+
     }
 
     @Override
