@@ -2,8 +2,7 @@ package com.darky.commands.misc;
 
 import com.darky.core.Database;
 import com.darky.util.DescriptionBuilder;
-import com.darky.util.Reactions;
-import com.darky.util.emotes.Emote;
+import com.darky.util.reactions.Reactions;
 import com.darky.util.emotes.Emotes;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
@@ -24,11 +23,9 @@ import static com.darky.core.Messages.sendMessage;
  * @author Stu
  */
 public class LinksCommand implements ICommand {
-    private Reactions reactions;
     private Database database;
 
-    public LinksCommand(Reactions reactions, Database database) {
-        this.reactions = reactions;
+    public LinksCommand(Database database) {
         this.database = database;
     }
 
@@ -38,7 +35,7 @@ public class LinksCommand implements ICommand {
                 "React with:\n" + Emotes.getFromName("DiscordIcon").getAsMessage() + " to get a invite to the support server\n" +
                 Emotes.getFromName("GitHub").getAsMessage() + " to get the GitHub organisation link\n" +
                 Reactions.ROBOT + " to get the Bot Invite\n", member.getUser(), true, null, new EmbedBuilder().setFooter("You have 30 seconds to react", null)).queue(msg -> {
-            reactions.newMenu(member.getUser(), msg, List.of(Emotes.getFromName("DiscordIcon").getAsReaction(), Emotes.getFromName("GitHub").getAsReaction(), Reactions.ROBOT), (emote, user) -> {
+            Reactions.newMenu(member.getUser(), msg, List.of(Emotes.getFromName("DiscordIcon").getAsReaction(), Emotes.getFromName("GitHub").getAsReaction(), Reactions.ROBOT), (emote, user) -> {
                 if (emote.equals(Emotes.getFromName("DiscordIcon").getAsReaction())){
                     editMessage(msg, database, "Invite Links!", "[Here](https://discord.gg/Q6tXZEp) is the link for the support server", member.getUser()).queue();
                     msg.clearReactions().queue();

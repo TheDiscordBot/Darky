@@ -7,7 +7,7 @@ import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.RegisterListener;
 import com.darky.util.emotes.Emotes;
-import com.darky.util.Reactions;
+import com.darky.util.reactions.Reactions;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -23,13 +23,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class Darky extends ListenerAdapter {
 
     private ShardManager shardManager;
     private Config config;
-    private Reactions reactions;
     private Logger logger = LoggerFactory.getLogger(Darky.class);
     private Database database;
     private static ScheduledExecutorService executor;
@@ -39,7 +37,6 @@ public class Darky extends ListenerAdapter {
     }
 
     private void run() {
-        this.reactions = new Reactions();
         this.config = Config.loadConfig("config.json");
         this.database = new Database(config).connect();
         executor = Executors.newScheduledThreadPool(config.getThreadPool());
@@ -54,12 +51,12 @@ public class Darky extends ListenerAdapter {
             logger.error("Error while building Shard Manager", e);
         }
 
-        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), this.reactions, this);
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), new Reactions(), this);
         CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config);
         settings.put(new HelpCommand(database), "help", "helpme")
                 .put(new KickCommand(database), "kick")
                 .put(new RegisterCommand(database), "register")
-                .put(new LinksCommand(reactions, database), "links")
+                .put(new LinksCommand(database), "links")
                 .activate();
     }
 
