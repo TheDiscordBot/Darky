@@ -4,10 +4,12 @@ import com.darky.core.Database;
 import com.darky.util.DescriptionBuilder;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,5 +35,10 @@ public class KickCommand implements ICommand {
                 .addUsage(prefix, labels, "@Member *Reason*", "Kicks the Member")
                 .addPermission("mod.kick")
                 .build();
+    }
+
+    @Override
+    public List<Permission> requiredPermissions() {
+        return List.of(Permission.KICK_MEMBERS);
     }
 }

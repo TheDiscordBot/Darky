@@ -7,6 +7,7 @@ import com.darky.util.emotes.Emotes;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -58,5 +59,10 @@ public class LinksCommand implements ICommand {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "", "Shows some useful links").build();
+    }
+
+    @Override
+    public List<Permission> requiredPermissions() {
+        return List.of(Permission.MESSAGE_MANAGE);
     }
 }
