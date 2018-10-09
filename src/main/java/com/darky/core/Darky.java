@@ -1,10 +1,12 @@
 package com.darky.core;
 
 import com.darky.commands.HelpCommand;
+import com.darky.commands.MinerCommand;
 import com.darky.commands.RepoCommand;
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
+import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.RegisterListener;
 import com.darky.util.emotes.Emotes;
@@ -64,13 +66,14 @@ public class Darky extends ListenerAdapter {
             e.printStackTrace();
         }
 
-        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), new Reactions(), this);
+        shardManager.addEventListener(new RegisterListener(database), new MentionListener(database, shardManager), new Reactions(), this, new DarkcoinListener(database));
         CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config);
         settings.put(new HelpCommand(database), "help", "helpme")
                 .put(new KickCommand(database), "kick")
                 .put(new RegisterCommand(database), "register")
                 .put(new LinksCommand(database), "links")
                 .put(new RepoCommand(repo, database), "repo")
+                .put(new MinerCommand(database), "miner")
                 .activate();
     }
 
