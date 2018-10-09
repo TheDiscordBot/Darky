@@ -1,6 +1,7 @@
-package com.darky.util;
+package com.darky.util.reactions;
 
 import com.darky.core.Darky;
+import com.darky.util.emotes.Emotes;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -24,17 +25,15 @@ public class Reactions extends ListenerAdapter {
     public static final String YES_EMOTE = "✅";
     public static final String NO_EMOTE = "❌";
     public static final String ROBOT = "\uD83E\uDD16";
-    public static final String GITHUB = "<:GitHub:498000368366518272>";
-    public static final String DISCORD_ICON = "<:DiscordIcon:497999830971449344>";
 
-    private List<Menu> menus;
+    private static List<Menu> menus;
     private boolean firstReaction = true;
 
     public Reactions() {
-        this.menus = new ArrayList<>();
+        menus = new ArrayList<>();
     }
 
-    public void newYesNoMenu(User[] user, Message msg, Consumer<User> yes, Consumer<User> no, Consumer<Void> aborted, int duration, boolean remove) {
+    public static void newYesNoMenu(User[] user, Message msg, Consumer<User> yes, Consumer<User> no, Consumer<Void> aborted, int duration, boolean remove) {
         menus.add(new Menu(Arrays.stream(user).map(User::getIdLong).toArray(Long[]::new), msg.getIdLong(), List.of(Reactions.YES_EMOTE, Reactions.NO_EMOTE), (emote, u) -> {
             if (emote.equals(Reactions.YES_EMOTE))
                 yes.accept(u);
@@ -43,7 +42,7 @@ public class Reactions extends ListenerAdapter {
         }, aborted, duration, remove));
     }
 
-    public void newYesNoMenu(User user, Message msg, Consumer<User> yes, Consumer<User> no, Consumer<Void> aborted, int duration, boolean remove) {
+    public static void newYesNoMenu(User user, Message msg, Consumer<User> yes, Consumer<User> no, Consumer<Void> aborted, int duration, boolean remove) {
         menus.add(new Menu(new Long[]{user.getIdLong()}, msg.getIdLong(), List.of(Reactions.YES_EMOTE, Reactions.NO_EMOTE), (emote, u) -> {
             if (emote.equals(Reactions.YES_EMOTE))
                 yes.accept(u);
@@ -52,12 +51,12 @@ public class Reactions extends ListenerAdapter {
         }, aborted, duration, remove));
     }
 
-    public void newMenu(User[] user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
+    public static void newMenu(User[] user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
         emotes.forEach(e -> msg.addReaction(e).queue());
         menus.add(new Menu(Arrays.stream(user).map(User::getIdLong).toArray(Long[]::new), msg.getIdLong(), emotes, reacted, aborted, duration, remove));
     }
 
-    public void newMenu(User user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
+    public static void newMenu(User user, Message msg, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
         emotes.forEach(e -> msg.addReaction(e).queue());
         menus.add(new Menu(new Long[]{user.getIdLong()}, msg.getIdLong(), emotes, reacted, aborted, duration, remove));
     }
@@ -79,32 +78,17 @@ public class Reactions extends ListenerAdapter {
             firstReaction = false;
         }
 
-        var emote = event.getReactionEmote().getName();
+        String emote;
+        if (event.getReactionEmote().getEmote() == null)
+            emote = event.getReactionEmote().getName();
+        else
+            emote = Emotes.getFromMention(event.getReactionEmote().getEmote().getAsMention()).getAsReaction();
+
         if (Arrays.asList(menu.user).contains(event.getUser().getIdLong()) && menu.emotes.contains(emote)) {
             menu.reacted.accept(emote, event.getUser());
             event.getReaction().removeReaction(event.getUser()).queue();
         } else {
             event.getReaction().removeReaction(event.getUser()).queue();
-        }
-    }
-
-    private class Menu {
-        private Long[] user;
-        private long message;
-        private Collection<String> emotes;
-        private BiConsumer<String, User> reacted;
-        private Consumer<Void> aborted;
-        private int duration;
-        private boolean remove;
-
-        Menu(Long[] user, long message, Collection<String> emotes, BiConsumer<String, User> reacted, Consumer<Void> aborted, int duration, boolean remove) {
-            this.user = user;
-            this.message = message;
-            this.emotes = emotes;
-            this.reacted = reacted;
-            this.aborted = aborted;
-            this.duration = duration;
-            this.remove = remove;
         }
     }
 }

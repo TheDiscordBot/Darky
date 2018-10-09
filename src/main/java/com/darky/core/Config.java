@@ -17,9 +17,15 @@ import java.nio.file.Paths;
  */
 public class Config {
 
+    @SerializedName("GITHUB_OAUTH")
+    @Expose
+    private String githubtoken;
     @SerializedName("THREAD_POOL")
     @Expose
     private int threadPool;
+    @SerializedName("EMOTE_GUILD")
+    @Expose
+    private long emoteGuild;
     @SerializedName("ERROR_CHANNEL")
     @Expose
     private long errorChannel;
@@ -114,46 +120,45 @@ public class Config {
     private boolean verifyConfig() {
         return !(this.token == null || this.shards == 0 || this.db_user == null ||
                 this.db_port == null || this.db_name == null || this.db_host == null || this.prefix == null || this.errorChannel == 0 ||
-                this.threadPool == 0);
+                this.threadPool == 0 || this.emoteGuild == 0);
     }
 
     public String getPrefix() {
         return prefix;
     }
-
     public String getToken() {
         return token;
     }
-
     public int getShards() {
         return shards;
     }
-
     public String getDb_host() {
         return db_host;
     }
-
     public String getDb_user() {
         return db_user;
     }
-
     public String getDb_pw() {
         return db_pw;
     }
-
     public String getDb_name() {
         return db_name;
     }
-
     public String getDb_port() {
         return db_port;
     }
-
     public long getErrorChannel() {
         return errorChannel;
     }
-
     public int getThreadPool() {
         return threadPool;
+    }
+
+    public String getGithubtoken() {
+        return githubtoken;
+
+    public long getEmoteGuild() {
+        return emoteGuild;
+
     }
 }
