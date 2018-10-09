@@ -88,9 +88,15 @@
             <version>3.5.4</version>
         </dependency>
         <dependency>
+<<<<<<< HEAD
             <groupId>com.github.johnnyjayjay</groupId>
             <artifactId>CommandAPI</artifactId>
             <version>LATEST</version>
+=======
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.94</version>
+>>>>>>> develop
         </dependency>
     </dependencies>
 </project>
