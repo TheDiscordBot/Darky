@@ -1,8 +1,8 @@
 package com.darky.listeners;
 
 import com.darky.core.Database;
+import com.darky.core.GithubStuff;
 import com.darky.core.Messages;
-import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -10,21 +10,25 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.kohsuke.github.GHCommit;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHUser;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class MentionListener extends ListenerAdapter {
 
     private Database database;
-    private ShardManager shardManager;
 
-    public MentionListener(Database database, ShardManager shardManager) {
+    public MentionListener(Database database) {
         this.database = database;
-        this.shardManager = shardManager;
     }
 
     @Override
@@ -50,7 +54,7 @@ public class MentionListener extends ListenerAdapter {
             );
             builder.addField("Developer", devs.toString(), false);
             builder.addField("Join our Dev Server!", "[Click here!](https://discord.gg/hxt7SvG)", true);
-            builder.addField("Github", "[Click here!](https://github.com/TheDiscordBot/Darky)", true);
+            builder.addField("Github", "[Click here!](https://github.com/TheDiscordBot/Darky)",false);
             Messages.sendMessage(database, event.getChannel(), null, null, event.getAuthor(), false, null, builder).queue();
 
         }

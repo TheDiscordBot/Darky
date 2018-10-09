@@ -17,6 +17,9 @@ import java.nio.file.Paths;
  */
 public class Config {
 
+    @SerializedName("GITHUB_OAUTH")
+    @Expose
+    private String githubtoken;
     @SerializedName("THREAD_POOL")
     @Expose
     private int threadPool;
@@ -150,7 +153,12 @@ public class Config {
     public int getThreadPool() {
         return threadPool;
     }
+
+    public String getGithubtoken() {
+        return githubtoken;
+
     public long getEmoteGuild() {
         return emoteGuild;
+
     }
 }
