@@ -156,9 +156,9 @@ public class Config {
 
     public String getGithubtoken() {
         return githubtoken;
+    }
 
     public long getEmoteGuild() {
         return emoteGuild;
-
     }
 }
