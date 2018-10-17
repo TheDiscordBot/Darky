@@ -1,8 +1,9 @@
 package com.darky.core;
 
-import com.darky.commands.TestCommand;
+import com.darky.commands.moderation.BanCommand;
 import com.darky.commands.user.HelpCommand;
 import com.darky.commands.user.MinerCommand;
+import com.darky.commands.user.PingCommand;
 import com.darky.commands.user.RepoCommand;
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
@@ -11,12 +12,10 @@ import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.ReadyListener;
 import com.darky.listeners.RegisterListener;
-import com.darky.util.emotes.Emotes;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHRepository;
@@ -71,13 +70,14 @@ public class Darky extends ListenerAdapter {
         }
 
         CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config, database);
-        settings.put(new HelpCommand(database), "help", "helpme")
-                .put(new KickCommand(database), "kick")
-                .put(new RegisterCommand(database), "register")
-                .put(new LinksCommand(database), "links")
-                .put(new RepoCommand(repo, database), "repo")
-                .put(new MinerCommand(database), "miner")
-                .put(new TestCommand(), "test")
+        settings.put(new LinksCommand(), "links")
+                .put(new BanCommand(), "ban")
+                .put(new KickCommand(), "kick")
+                .put(new RegisterCommand(), "register")
+                .put(new HelpCommand(), "help", "helpme")
+                .put(new MinerCommand(), "miner")
+                .put(new PingCommand(), "ping")
+                .put(new RepoCommand(repo), "repo")
                 .activate();
     }
 

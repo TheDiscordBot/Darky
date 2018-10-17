@@ -2,16 +2,19 @@ package com.darky.commands.user;
 
 import com.darky.core.Database;
 import com.darky.core.GithubStuff;
+import com.darky.util.DescriptionBuilder;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import static com.darky.core.Messages.editMessage;
 import static com.darky.core.Messages.sendMessage;
@@ -19,16 +22,14 @@ import static com.darky.core.Messages.sendMessage;
 public class RepoCommand implements ICommand {
 
     private GHRepository repo;
-    private Database database;
 
-    public RepoCommand(GHRepository repo, Database database) {
+    public RepoCommand(GHRepository repo) {
         this.repo = repo;
-        this.database = database;
     }
 
     @Override
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
-        sendMessage(database, channel, "Loading...", "Please wait!", member.getUser(), true).queue(
+        sendMessage(event.getDatabase(), channel, "Loading...", "Please wait!", member.getUser(), true).queue(
                 msg -> {
                     try {
                         GHUser hax = null;
@@ -50,12 +51,21 @@ public class RepoCommand implements ICommand {
                             builder.addField(commitData.getUser().getLogin(), "Commits: " + commitData.getCommits() + " - Lines added: "
                                     + commitData.getAdded() + " - Lines changed: " + commitData.getChanged() + " - Lines deleted: " + commitData.getRemoved(), true);
                         }
-                        editMessage(msg, database, "Github Stats", null, member.getUser(), false, null, builder).queue();
+                        editMessage(msg, event.getDatabase(), "Github Stats", null, member.getUser(), false, null, builder).queue();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
         );
+    }
+
+    @Override
+    public Message info(Member member, String prefix, Set<String> labels, Database database) {
+        return new DescriptionBuilder()
+                .setColor(database.getColor(member.getUser()))
+                .addUsage(prefix, labels, "@Member *Reason*", "Shows useful Informations about the Darky Repository on Github")
+                .addPermission(permission())
+                .build();
     }
 
     @Override

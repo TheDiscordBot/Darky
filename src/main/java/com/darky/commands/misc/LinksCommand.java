@@ -26,11 +26,6 @@ import static com.darky.core.Messages.sendMessage;
  * @author Stu
  */
 public class LinksCommand implements ICommand {
-    private Database database;
-
-    public LinksCommand(Database database) {
-        this.database = database;
-    }
 
     @Override
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
@@ -38,29 +33,30 @@ public class LinksCommand implements ICommand {
         Reactions.newMenu(event, member.getUser(), channel, "Invite Links", "Here is the right place if you want some links!",
                 new Builder(Reactions.ROBOT, Reactions.ROBOT, "Bot Invite", menu -> {
                     channel.getMessageById(menu.getMessageid()).queue( msg ->
-                    editMessage(msg, database, "Invite Links!",
-                            "[Here](" + String.format("https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=2146958847", member.getUser()))
+                    editMessage(msg, event.getDatabase(), "Invite Links!",
+                            "[Here](" + String.format("https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=2146958847", event.getJDA().getSelfUser().getIdLong())+")", member.getUser()).queue()
                     );
                 }),
                 new Builder(Emotes.getFromName("DiscordIcon"), "Support Server", menu -> {
                     channel.getMessageById(menu.getMessageid()).queue( msg ->
-                            editMessage(msg, database, "Invite Links!",
-                                    "[Here](https://discord.gg/Q6tXZEp) is the link for the support server", member.getUser())
+                            editMessage(msg, event.getDatabase(), "Invite Links!",
+                                    "[Here](https://discord.gg/Q6tXZEp) is the link for the support server", member.getUser()).queue()
                     );
                 }),
                 new Builder(Emotes.getFromName("GitHub"), "Github organisation", menu -> {
                     channel.getMessageById(menu.getMessageid()).queue(msg ->
-                            editMessage(msg, database, "Invite Links!",
-                                    "[Here](https://github.com/TheDiscordBot) is the link of the GitHub organisation", member.getUser())
+                            editMessage(msg, event.getDatabase(), "Invite Links!",
+                                    "[Here](https://github.com/TheDiscordBot) is the link of the GitHub organisation", member.getUser()).queue()
                     );
                 })
         );
     }
 
     @Override
-    public Message info(Member member, String prefix, Set<String> labels) {
+    public Message info(Member member, String prefix, Set<String> labels, Database database) {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
+                .addPermission(permission())
                 .addUsage(prefix, labels, "", "Shows some useful links").build();
     }
 

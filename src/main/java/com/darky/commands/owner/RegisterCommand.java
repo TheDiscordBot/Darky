@@ -16,21 +16,15 @@ import static com.darky.core.Messages.sendMessage;
 
 public class RegisterCommand implements ICommand {
 
-    private Database database;
-
-    public RegisterCommand(Database database) {
-        this.database = database;
-    }
-
     @Override
-    public void onCommand(CommandEvent commandEvent, Member member, TextChannel textChannel, String[] strings) throws Exception {
-        sendMessage(database, textChannel, "Registering all Users and Guilds...", null, commandEvent.getAuthor()).queue(m -> {
-            for (Guild guild : commandEvent.getJDA().asBot().getShardManager().getGuilds()) {
+    public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
+        sendMessage(event.getDatabase(), channel, "Registering all Users and Guilds...", null, event.getAuthor()).queue(m -> {
+            for (Guild guild : event.getJDA().asBot().getShardManager().getGuilds()) {
                 for (Member member1 : guild.getMembers()) {
-                    database.createIfNotExists(member1);
+                    event.getDatabase().createIfNotExists(member1);
                 }
             }
-            editMessage(m, database, "Finished!", null, commandEvent.getAuthor(), false, null, null).queue();
+            editMessage(m, event.getDatabase(), "Finished!", null, event.getAuthor(), false, null, null).queue();
         });
     }
 

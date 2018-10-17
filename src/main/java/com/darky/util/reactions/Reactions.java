@@ -59,6 +59,7 @@ public class Reactions extends ListenerAdapter {
 
                             if (hashMap.containsKey(emote)) {
                                 hashMap.get(emote).accept(new Menu(user.getIdLong(), msg.getIdLong(), hashMap));
+                                msg.clearReactions().queue();
                                 commandEvent.getJDA().asBot().getShardManager().removeEventListener(this);
                             }
                         }

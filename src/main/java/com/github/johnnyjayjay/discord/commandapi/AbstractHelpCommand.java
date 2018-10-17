@@ -1,5 +1,6 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
+import com.darky.core.Database;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 
@@ -33,7 +34,7 @@ public abstract class AbstractHelpCommand implements ICommand {
             String label = settings.isLabelIgnoreCase() ? args[0].toLowerCase() : args[0];
             if (settings.getLabelSet().contains(label)) {
                 ICommand command = settings.getCommands().get(label);
-                this.provideSpecificHelp(event, prefix, command, settings.getLabels(command));
+                this.provideSpecificHelp(event, prefix, command, settings.getLabels(command), event.getDatabase());
             } else {
                 this.provideGeneralHelp(event, prefix, unmodifiableCommands);
             }
@@ -58,6 +59,6 @@ public abstract class AbstractHelpCommand implements ICommand {
      * @param command The ICommand that the help was requested for.
      * @param labels All the labels that are associated with the ICommand instance.
      */
-    public abstract void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels);
+    public abstract void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels, Database database);
 
 }

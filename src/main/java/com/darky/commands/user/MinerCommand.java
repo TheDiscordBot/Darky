@@ -2,33 +2,39 @@ package com.darky.commands.user;
 
 import com.darky.core.Database;
 import com.darky.core.entities.Miner;
+import com.darky.util.DescriptionBuilder;
 import com.github.johnnyjayjay.discord.commandapi.AbstractCommand;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.SubCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import static com.darky.core.Messages.sendMessage;
 
 public class MinerCommand extends AbstractCommand {
-    private Database database;
 
-    public MinerCommand(Database database) {
-        this.database = database;
+    @SubCommand
+    public void onFalseUsage(CommandEvent event, Member member, TextChannel channel, String[] args) {
+        sendMessage(event.getDatabase(), channel, "Error!", "False usage... use d!help miner", member.getUser()).queue();
     }
 
     @SubCommand(args = "buy")
     public void onMinerBuy(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        database.insertMiner(member.getUser().getIdLong());
-        sendMessage(database, channel, "Success!", "I buyed your miner!", member.getUser(), true).queue();
+        if (event.getDatabase().getCoins(event.getAuthor())>=100) {
+            event.getDatabase().insertMiner(member.getUser().getIdLong());
+            sendMessage(event.getDatabase(), channel, "Success!", "I buyed your miner!", member.getUser(), true).queue();
+            event.getDatabase().setCoins(event.getAuthor(), event.getDatabase().getCoins(event.getAuthor())-100);
+        } else sendMessage(event.getDatabase(), event.getChannel(), "Error!", "You haven't enough coins!", event.getAuthor()).queue();
     }
 
     @SubCommand(args = "list")
     public void onMinerList(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        ArrayList<Miner> miners = (ArrayList<Miner>) database.getAllMiners();
+        ArrayList<Miner> miners = (ArrayList<Miner>) event.getDatabase().getAllMiners();
         ArrayList<Miner> yourminers = new ArrayList<>();
         for (Miner miner:miners) {
             if (miner.getUser_id()==member.getUser().getIdLong()) {
@@ -40,12 +46,12 @@ public class MinerCommand extends AbstractCommand {
             Miner miner = yourminers.get(i);
             embedBuilder.addField("Miner "+(i+1), "Chance: "+miner.getChance()+"\nCoins: "+miner.getMinedcoins()+"\nMiner ID: "+miner.getMiner_id(), true);
         }
-        sendMessage(database, channel, "Miner Info", "Here are your miners!", member.getUser(), false, null, embedBuilder).queue();
+        sendMessage(event.getDatabase(), channel, "Miner Info", "Here are your miners!", member.getUser(), false, null, embedBuilder).queue();
     }
 
     @SubCommand(args = "transfer")
     public void onMinerTransferAll(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        ArrayList<Miner> miners = (ArrayList<Miner>) database.getAllMiners();
+        ArrayList<Miner> miners = (ArrayList<Miner>) event.getDatabase().getAllMiners();
         ArrayList<Miner> yourminers = new ArrayList<>();
         for (Miner miner:miners) {
             if (miner.getUser_id()==member.getUser().getIdLong()) {
@@ -56,14 +62,25 @@ public class MinerCommand extends AbstractCommand {
         for (Miner miner:yourminers) {
             coins+=miner.getMinedcoins();
             miner.setMinedcoins(0);
-            database.setMiner(miner);
+            event.getDatabase().setMiner(miner);
         }
-        database.setCoins(member.getUser(), database.getCoins(member.getUser())+coins);
-        sendMessage(database, channel, "Success!", "Sent "+coins+" Coins to your Account!", member.getUser(), true).queue();
+        event.getDatabase().setCoins(member.getUser(), event.getDatabase().getCoins(member.getUser())+coins);
+        sendMessage(event.getDatabase(), channel, "Success!", "Sent "+coins+" Coins to your Account!", member.getUser(), true).queue();
     }
 
     @Override
     public String permission() {
         return "user.miner";
+    }
+
+    @Override
+    public Message info(Member member, String prefix, Set<String> labels, Database database) {
+        return new DescriptionBuilder()
+                .setColor(database.getColor(member.getUser()))
+                .addUsage(prefix, labels, "buy", "Buys a Miner")
+                .addUsage(prefix, labels, "list", "List your Miners")
+                .addUsage(prefix, labels, "transfer", "Transfer money to your Account")
+                .addPermission(permission())
+                .build();
     }
 }

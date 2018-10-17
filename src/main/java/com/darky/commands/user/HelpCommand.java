@@ -25,12 +25,6 @@ import static com.darky.core.Messages.sendMessage;
  */
 public class HelpCommand extends AbstractHelpCommand {
 
-    private Database database;
-
-    public HelpCommand(Database database) {
-        this.database = database;
-    }
-
     @Override
     public void provideGeneralHelp(CommandEvent event, String prefix, Map<String, ICommand> commands) {
         var embed = new EmbedBuilder().setColor(new Color(52, 73, 94)).setDescription("For more information about a command use " + event.getCommandSettings().getPrefix(event.getGuild().getIdLong()) + "help <Command>\n\n");
@@ -51,21 +45,22 @@ public class HelpCommand extends AbstractHelpCommand {
             embed.addField(firstLetterUpperCase(c), String.join(",", list.values()), false);
         });
 
-        sendMessage(database, event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
+        sendMessage(event.getDatabase(), event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
 
     }
 
     @Override
-    public void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels) {
-        event.respond(command.info(event.getMember(), prefix, labels));
+    public void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels, Database database) {
+        event.respond(command.info(event.getMember(), prefix, labels, event.getDatabase()));
     }
 
     @Override
-    public Message info(Member member, String prefix, Set<String> labels) {
+    public Message info(Member member, String prefix, Set<String> labels, Database database) {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "", "Shows the help message")
                 .addUsage(prefix, labels, "<command>", "Shows more information about the command")
+                .addPermission(permission())
                 .build();
     }
 
