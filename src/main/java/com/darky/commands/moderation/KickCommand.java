@@ -12,6 +12,8 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import java.util.List;
 import java.util.Set;
 
+import static com.darky.core.Messages.sendMessage;
+
 /**
  * https://github.com/Stupremee
  * @author Stu
@@ -25,7 +27,16 @@ public class KickCommand implements ICommand {
 
     @Override
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        channel.sendMessage("The user got kicked successfully!").queue();
+        if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+            if (member.hasPermission(Permission.KICK_MEMBERS)) {
+                if (event.getMessage().getMentionedMembers().size() == 1) {
+                    event.getGuild().getController().kick(event.getMessage().getMentionedMembers().get(0)).queue(
+                            msg -> sendMessage(database, channel, "Success", "Kicked!", member.getUser())
+                    );
+                } else sendMessage(database, channel, "Error!", "False usage... use d!help kick", member.getUser());
+            } else
+                sendMessage(database, channel, "Error!", "You hasn't the permission to do this", member.getUser());
+        } else sendMessage(database, channel, "Error!", "I haven't the permission to do this", member.getUser());
     }
 
     @Override
