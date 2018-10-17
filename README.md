@@ -1,2 +1,2 @@
 # Darky
-DARKY > bulby
+DARKY and BULBY are both super cool
