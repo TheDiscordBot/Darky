@@ -1,20 +1,23 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
 import com.darky.core.Config;
+import com.darky.core.Database;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+
+import static com.darky.core.Messages.sendMessage;
 
 
 class CommandListener extends ListenerAdapter {
@@ -22,11 +25,13 @@ class CommandListener extends ListenerAdapter {
     private Config config;
     private CommandSettings settings;
     private Map<Long, Long> cooldowns; // Long: User id, Long: last timestamp
+    private Database database;
 
-    public CommandListener(CommandSettings settings, Config config) {
+    public CommandListener(CommandSettings settings, Config config, Database database) {
         this.config = config;
         this.settings = settings;
         this.cooldowns = new HashMap<>();
+        this.database = database;
     }
 
     @Override
@@ -47,8 +52,10 @@ class CommandListener extends ListenerAdapter {
                 CommandEvent.Command cmd = CommandEvent.parseCommand(raw, prefix, settings);
                 if (cmd.getExecutor() != null) {
                     try {
-                        cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings),
-                                event.getMember(), channel, cmd.getArgs());
+                        if (hasPerms(event.getMember(), cmd)) {
+                            cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database),
+                                    event.getMember(), channel, cmd.getArgs());
+                        } else sendMessage(database, channel, "Error!", "You haven't the permission to do that!", event.getAuthor()).queue();
                     } catch (Throwable t) {
                         event.getChannel().sendMessage(new EmbedBuilder()
                                 .setColor(Color.RED)
@@ -69,5 +76,16 @@ class CommandListener extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    private boolean hasPerms(Member member, CommandEvent.Command cmd) {
+        if (config.getOwnersAsList().contains(member.getUser().getIdLong())) return true;
+        if (cmd.getExecutor().permission() == null) return false;
+        String perm = cmd.getExecutor().permission();
+        ArrayList<String> perms = new ArrayList<>(Arrays.asList(database.getPermissions(member)));
+        String[] split = perm.split("\\.");
+        if (split.length==2) if (perms.contains(split[0]+".*")) return true;
+        if (perms.contains(cmd.getExecutor().permission()) || perms.contains("*")) return true;
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
+import com.darky.core.Database;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.IMentionable;
@@ -27,11 +28,17 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     private final Command command;
     private final CommandSettings settings;
+    private Database database;
 
-    public CommandEvent(JDA api, long responseNumber, Message message, Command command, CommandSettings settings) {
+    public CommandEvent(JDA api, long responseNumber, Message message, Command command, CommandSettings settings, Database database) {
         super(api, responseNumber, message);
         this.command = command;
         this.settings = settings;
+        this.database = database;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
     /**

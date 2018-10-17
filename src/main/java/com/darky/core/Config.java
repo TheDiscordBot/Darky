@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * https://github.com/Stupremee
@@ -53,6 +56,9 @@ public class Config {
     @SerializedName("DB_PW")
     @Expose
     private String db_pw;
+    @SerializedName("OWNERS")
+    @Expose
+    private Long[] owners;
 
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
 
@@ -160,5 +166,13 @@ public class Config {
 
     public long getEmoteGuild() {
         return emoteGuild;
+    }
+
+    public Long[] getOwners() {
+        return owners;
+    }
+
+    public List<Long> getOwnersAsList() {
+        return new ArrayList<>(Arrays.asList(owners));
     }
 }

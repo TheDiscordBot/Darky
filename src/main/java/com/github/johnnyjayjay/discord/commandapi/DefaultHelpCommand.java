@@ -64,4 +64,9 @@ public final class DefaultHelpCommand extends AbstractHelpCommand {
     public Message info(Member member, String prefix, Set<String> labels) {
         return info;
     }
+
+    @Override
+    public String permission() {
+        return "user.help";
+    }
 }

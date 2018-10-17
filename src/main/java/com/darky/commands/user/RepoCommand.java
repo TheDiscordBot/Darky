@@ -1,4 +1,4 @@
-package com.darky.commands;
+package com.darky.commands.user;
 
 import com.darky.core.Database;
 import com.darky.core.GithubStuff;
@@ -56,5 +56,10 @@ public class RepoCommand implements ICommand {
                     }
                 }
         );
+    }
+
+    @Override
+    public String permission() {
+        return "user.repo";
     }
 }

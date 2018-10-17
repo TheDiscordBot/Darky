@@ -1,4 +1,4 @@
-package com.darky.commands;
+package com.darky.commands.user;
 
 import com.darky.core.Database;
 import com.darky.util.DescriptionBuilder;
@@ -37,9 +37,6 @@ public class HelpCommand extends AbstractHelpCommand {
 
         Set<String> categories = new HashSet<>();
         commands.forEach((label, cmd) -> {
-            if (cmd.getClass().getPackage() == this.getClass().getPackage())
-                categories.add("No Category");
-            else
                 categories.add(cmd.getClass().getPackage().getName().replace("com.darky.commands.", ""));
         });
 
@@ -72,14 +69,16 @@ public class HelpCommand extends AbstractHelpCommand {
                 .build();
     }
 
+    @Override
+    public String permission() {
+        return "user.help";
+    }
+
     private String firstLetterUpperCase(String inp) {
         return inp.substring(0, 1).toUpperCase() + inp.substring(1);
     }
 
     private String getCategory(ICommand cmd) {
-        if (cmd.getClass().getPackage() == this.getClass().getPackage())
-            return "No Category";
-        else
-            return cmd.getClass().getPackage().getName().replace("com.darky.commands.", "");
+        return cmd.getClass().getPackage().getName().replace("com.darky.commands.", "");
     }
 }

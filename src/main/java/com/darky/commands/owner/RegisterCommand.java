@@ -33,4 +33,9 @@ public class RegisterCommand implements ICommand {
             editMessage(m, database, "Finished!", null, commandEvent.getAuthor(), false, null, null).queue();
         });
     }
+
+    @Override
+    public String permission() {
+        return null;
+    }
 }

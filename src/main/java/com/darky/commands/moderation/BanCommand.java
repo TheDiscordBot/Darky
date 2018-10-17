@@ -32,4 +32,9 @@ public class BanCommand implements ICommand {
                 sendMessage(database, channel, "Error!", "You hasn't the permission to do this", member.getUser());
         } else sendMessage(database, channel, "Error!", "I haven't the permission to do this", member.getUser());
     }
+
+    @Override
+    public String permission() {
+        return "mod.ban";
+    }
 }

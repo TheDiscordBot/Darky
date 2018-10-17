@@ -106,7 +106,7 @@ public class Database {
     }
 
     public String[] getPermissions(Member member) {
-        var s = getFirst("permissions", Statements.selectFromMember, String.class, member.getUser().getIdLong(), member.getUser().getIdLong() == 0);
+        var s = getFirst("permissions", Statements.selectFromMember, String.class, member.getUser().getIdLong(), member.getGuild().getIdLong());
         var split = s.split(",");
         return split;
     }
@@ -193,7 +193,7 @@ public class Database {
         public static String[] createTables = {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',coins BIGINT NOT NULL DEFAULT '0',PRIMARY KEY (user_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
+                "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,permissions VARCHAR(80) NOT NULL DEFAULT 'user.*',UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
                         " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));",
                 "CREATE TABLE IF NOT EXISTS Darkcoin (user_id BIGINT NOT NULL,minedcoins BIGINT NOT NULL DEFAULT '0',chance BIGINT NOT NULL DEFAULT '1',miner_id BIGINT NOT NULL AUTO_INCREMENT," +
                         "FOREIGN KEY (user_id) REFERENCES Discord_user (user_id),PRIMARY KEY (miner_id));"

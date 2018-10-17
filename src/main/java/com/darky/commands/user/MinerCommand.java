@@ -1,4 +1,4 @@
-package com.darky.commands;
+package com.darky.commands.user;
 
 import com.darky.core.Database;
 import com.darky.core.entities.Miner;
@@ -60,5 +60,10 @@ public class MinerCommand extends AbstractCommand {
         }
         database.setCoins(member.getUser(), database.getCoins(member.getUser())+coins);
         sendMessage(database, channel, "Success!", "Sent "+coins+" Coins to your Account!", member.getUser(), true).queue();
+    }
+
+    @Override
+    public String permission() {
+        return "user.miner";
     }
 }

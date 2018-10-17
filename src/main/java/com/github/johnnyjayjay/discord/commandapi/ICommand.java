@@ -16,7 +16,6 @@ import java.util.Set;
  * @see AbstractCommand
  * @see AbstractHelpCommand
  */
-@FunctionalInterface
 public interface ICommand {
 
     /**
@@ -61,5 +60,7 @@ public interface ICommand {
     default Message info(Member member, String prefix, Set<String> labels) {
         return DEFAULT_INFO;
     }
+
+    String permission();
 
 }
