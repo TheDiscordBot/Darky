@@ -55,7 +55,7 @@ class CommandListener extends ListenerAdapter {
                         if (hasPerms(event.getMember(), cmd)) {
                         if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
                                 event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
-                            cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings),
+                            cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database),
                                     event.getMember(), channel, cmd.getArgs());
                         } else {
                             var desc = new StringBuilder().append("**__Required Permissions:__**\n\n");

@@ -47,10 +47,9 @@ public class KickCommand implements ICommand {
                 .addPermission("mod.kick")
                 .build();
     }
-        return "mod.kick";
-    public String permission() {
     @Override
-
+    public String permission() {
+        return "mod.kick";
     }
 
     @Override
