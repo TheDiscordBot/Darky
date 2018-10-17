@@ -1,10 +1,12 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,5 +64,10 @@ public interface ICommand {
     }
 
     String permission();
+
+
+    default List<Permission> requiredPermissions() {
+        return List.of();
+    }
 
 }

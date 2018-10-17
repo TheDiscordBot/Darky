@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.darky.core.Messages.sendMessage;
@@ -46,9 +47,14 @@ public class KickCommand implements ICommand {
                 .addPermission("mod.kick")
                 .build();
     }
+        return "mod.kick";
+    public String permission() {
+    @Override
+
+    }
 
     @Override
-    public String permission() {
-        return "mod.kick";
+    public List<Permission> requiredPermissions() {
+        return List.of(Permission.KICK_MEMBERS);
     }
 }
