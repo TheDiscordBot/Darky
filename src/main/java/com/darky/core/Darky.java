@@ -52,13 +52,13 @@ public class Darky extends ListenerAdapter {
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(config.getToken())
                 .setShardsTotal(config.getShards())
-                .setGame(Game.playing("with bulby"))
                 .addEventListeners(new RegisterListener(database), new MentionListener(database), new DarkcoinListener(database), new ReadyListener(config));
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
             logger.error("Error while building Shard Manager", e);
         }
+        GameAnimator.start(shardManager);
         GitHub github = null;
         GHRepository repo = null;
         try {
