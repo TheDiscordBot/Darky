@@ -1,6 +1,7 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
 import com.darky.core.Config;
+import com.darky.core.Darky;
 import com.darky.core.Database;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -55,6 +56,7 @@ class CommandListener extends ListenerAdapter {
                         if (hasPerms(event.getMember(), cmd)) {
                         if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
                                 event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
+                            database.setCoins(event.getAuthor(), database.getCoins(event.getAuthor())+1);
                             cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database),
                                     event.getMember(), channel, cmd.getArgs());
                         } else {
@@ -95,13 +97,13 @@ class CommandListener extends ListenerAdapter {
     }
 
     private boolean hasPerms(Member member, CommandEvent.Command cmd) {
+        String perm = Darky.getPermission(cmd.getExecutor());
+        System.out.println(perm);
         if (config.getOwnersAsList().contains(member.getUser().getIdLong())) return true;
-        if (cmd.getExecutor().permission() == null) return false;
-        String perm = cmd.getExecutor().permission();
         ArrayList<String> perms = new ArrayList<>(Arrays.asList(database.getPermissions(member)));
         String[] split = perm.split("\\.");
         if (split.length==2) if (perms.contains(split[0]+".*")) return true;
-        if (perms.contains(cmd.getExecutor().permission()) || perms.contains("*")) return true;
+        if (perms.contains(perm) || perms.contains("*")) return true;
         return false;
     }
 }

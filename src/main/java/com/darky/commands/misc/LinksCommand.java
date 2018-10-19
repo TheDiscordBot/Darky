@@ -56,13 +56,7 @@ public class LinksCommand implements ICommand {
     public Message info(Member member, String prefix, Set<String> labels, Database database) {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
-                .addPermission(permission())
                 .addUsage(prefix, labels, "", "Shows some useful links").build();
-    }
-
-    @Override
-    public String permission() {
-        return "user.links";
     }
 
     @Override

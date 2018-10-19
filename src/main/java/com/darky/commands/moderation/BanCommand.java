@@ -40,12 +40,7 @@ public class BanCommand implements ICommand {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "@Member *Reason*", "Bans the Member")
-                .addPermission(permission())
                 .build();
-    }
-    @Override
-    public String permission() {
-        return "mod.ban";
     }
 
     @Override

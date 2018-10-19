@@ -64,8 +64,6 @@ public interface ICommand {
         return DEFAULT_INFO;
     }
 
-    String permission();
-
 
     default List<Permission> requiredPermissions() {
         return List.of();

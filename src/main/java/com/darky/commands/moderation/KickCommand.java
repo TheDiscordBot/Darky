@@ -42,12 +42,7 @@ public class KickCommand implements ICommand {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "@Member *Reason*", "Kicks the Member")
-                .addPermission(permission())
                 .build();
-    }
-    @Override
-    public String permission() {
-        return "mod.kick";
     }
 
     @Override

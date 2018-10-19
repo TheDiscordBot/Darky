@@ -60,13 +60,7 @@ public class HelpCommand extends AbstractHelpCommand {
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "", "Shows the help message")
                 .addUsage(prefix, labels, "<command>", "Shows more information about the command")
-                .addPermission(permission())
                 .build();
-    }
-
-    @Override
-    public String permission() {
-        return "user.help";
     }
 
     private String firstLetterUpperCase(String inp) {

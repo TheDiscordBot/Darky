@@ -69,18 +69,12 @@ public class MinerCommand extends AbstractCommand {
     }
 
     @Override
-    public String permission() {
-        return "user.miner";
-    }
-
-    @Override
     public Message info(Member member, String prefix, Set<String> labels, Database database) {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "buy", "Buys a Miner")
                 .addUsage(prefix, labels, "list", "List your Miners")
                 .addUsage(prefix, labels, "transfer", "Transfer money to your Account")
-                .addPermission(permission())
                 .build();
     }
 }

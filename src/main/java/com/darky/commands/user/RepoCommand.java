@@ -64,12 +64,6 @@ public class RepoCommand implements ICommand {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "@Member *Reason*", "Shows useful Informations about the Darky Repository on Github")
-                .addPermission(permission())
                 .build();
-    }
-
-    @Override
-    public String permission() {
-        return "user.repo";
     }
 }

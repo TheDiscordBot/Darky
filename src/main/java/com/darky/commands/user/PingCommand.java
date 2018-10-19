@@ -23,12 +23,7 @@ public class PingCommand implements ICommand {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
                 .addUsage(prefix, labels, "", "Shows the Bots Ping")
-                .addPermission(permission())
                 .build();
     }
 
-    @Override
-    public String permission() {
-        return "user.ping";
-    }
 }

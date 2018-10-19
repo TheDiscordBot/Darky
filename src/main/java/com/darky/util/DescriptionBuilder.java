@@ -35,16 +35,6 @@ public class DescriptionBuilder {
         return this;
     }
 
-    public DescriptionBuilder addPermission(String permission) {
-        this.perms.add(permission);
-        return this;
-    }
-
-    public DescriptionBuilder addPermissions(String... permissions) {
-        this.perms.addAll(Arrays.asList(permissions));
-        return this;
-    }
-
     public DescriptionBuilder addUsage(String prefix, Set<String> labels, String args, String job) {
         usages.add(prefix + "[" + String.join("|", labels) +
                 "]" + " " + args + " --- "
