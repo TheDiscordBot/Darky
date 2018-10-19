@@ -98,7 +98,6 @@ class CommandListener extends ListenerAdapter {
 
     private boolean hasPerms(Member member, CommandEvent.Command cmd) {
         String perm = Darky.getPermission(cmd.getExecutor());
-        System.out.println(perm);
         if (config.getOwnersAsList().contains(member.getUser().getIdLong())) return true;
         ArrayList<String> perms = new ArrayList<>(Arrays.asList(database.getPermissions(member)));
         String[] split = perm.split("\\.");
