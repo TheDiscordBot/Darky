@@ -1,10 +1,7 @@
 package com.darky.core;
 
 import com.darky.commands.moderation.BanCommand;
-import com.darky.commands.user.HelpCommand;
-import com.darky.commands.user.MinerCommand;
-import com.darky.commands.user.PingCommand;
-import com.darky.commands.user.RepoCommand;
+import com.darky.commands.user.*;
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
@@ -76,6 +73,7 @@ public class Darky extends ListenerAdapter {
                 .put(new MinerCommand(), "miner")
                 .put(new PingCommand(), "ping")
                 .put(new RepoCommand(repo), "repo")
+                .put(new ProfileCommand(), "profile")
                 .activate();
     }
 
