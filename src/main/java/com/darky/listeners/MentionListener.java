@@ -47,6 +47,7 @@ public class MentionListener extends ListenerAdapter {
             model.getDependencies().forEach(
                     dependency -> stringBuilder.append(dependency.getArtifactId()+" - "+dependency.getVersion()+"\n")
             );
+            stringBuilder.append("\nOther used Dependencies: \nEdited Command Api - Johnny");
             builder.addField("Dependencies", stringBuilder.toString(), false);
             StringBuilder devs = new StringBuilder();
             model.getDevelopers().forEach(

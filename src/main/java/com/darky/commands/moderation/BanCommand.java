@@ -29,7 +29,7 @@ public class BanCommand implements ICommand {
                                 msg -> sendMessage(event.getDatabase(), channel, "Success", "Banned!", member.getUser()).queue()
                         );
                     } else sendMessage(event.getDatabase(), channel, "Error!", "I haven't the permission to do this", member.getUser()).queue();
-                } else sendMessage(event.getDatabase(), channel, "Error!", "False usage... use d!help ban", member.getUser()).queue();
+                } else sendMessage(event.getDatabase(), channel, "Error!", "Wrong usage... use d!help ban", member.getUser()).queue();
             } else
                 sendMessage(event.getDatabase(), channel, "Error!", "You hasn't the permission to do this", member.getUser()).queue();
         } else sendMessage(event.getDatabase(), channel, "Error!", "I haven't the permission to do this", member.getUser()).queue();

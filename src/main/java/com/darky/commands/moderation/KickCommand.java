@@ -31,7 +31,7 @@ public class KickCommand implements ICommand {
                                 msg -> sendMessage(event.getDatabase(), channel, "Success", "Kicked!", member.getUser()).queue()
                         );
                     } else sendMessage(event.getDatabase(), channel, "Error!", "I haven't the permission to do this", member.getUser()).queue();
-                } else sendMessage(event.getDatabase(), channel, "Error!", "False usage... use d!help kick", member.getUser()).queue();
+                } else sendMessage(event.getDatabase(), channel, "Error!", "Wrong usage... use d!help kick", member.getUser()).queue();
             } else
                 sendMessage(event.getDatabase(), channel, "Error!", "You hasn't the permission to do this", member.getUser()).queue();
         } else sendMessage(event.getDatabase(), channel, "Error!", "I haven't the permission to do this", member.getUser()).queue();

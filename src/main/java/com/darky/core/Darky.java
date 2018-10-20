@@ -1,6 +1,7 @@
 package com.darky.core;
 
 import com.darky.commands.moderation.BanCommand;
+import com.darky.commands.moderation.PermissionCommand;
 import com.darky.commands.user.*;
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
@@ -73,6 +74,7 @@ public class Darky extends ListenerAdapter {
                 .put(new PingCommand(), "ping")
                 .put(new RepoCommand(repo), "repo")
                 .put(new ProfileCommand(), "profile")
+                .put(new PermissionCommand(), "permission")
                 .activate();
     }
 
