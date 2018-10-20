@@ -8,7 +8,6 @@ import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.ReadyListener;
-import com.darky.listeners.RegisterListener;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -47,7 +46,7 @@ public class Darky extends ListenerAdapter {
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(config.getToken())
                 .setShardsTotal(config.getShards())
-                .addEventListeners(new RegisterListener(database), new MentionListener(database), new DarkcoinListener(database), new ReadyListener(config));
+                .addEventListeners(new MentionListener(database), new DarkcoinListener(database), new ReadyListener(config));
         try {
             shardManager = builder.build();
         } catch (LoginException e) {

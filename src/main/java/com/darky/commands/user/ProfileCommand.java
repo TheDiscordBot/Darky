@@ -16,46 +16,64 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class ProfileCommand implements ICommand {
     @Override
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
-        BufferedImage image = ImageIO.read(new File("./profile/default.jpg"));
+        BufferedImage image = ImageIO.read(new File("./profile/default.png"));
         Graphics2D g = image.createGraphics();
         Map<RenderingHints.Key, Object> hints = new HashMap<>();
-        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        // hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        // hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-        hints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        // hints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        // hints.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g.setRenderingHints(hints);
 
-        Font font = new Font("Arial", 0, 55);
+        Font font = new Font("Open Sans Bold", 0, 55);
         g.setFont(font);
 
-        System.out.println(event.getAuthor().getAvatarUrl());
-
         // add Avatar and Name
-        g.drawString(event.getMember().getEffectiveName(), 332, 213);
+        g.drawString(event.getMember().getEffectiveName(), 320, 180);
         g.drawImage(ImageIO.read(new URL(event.getAuthor().getAvatarUrl()).openConnection().getInputStream()), 84, 87, 200, 200, null);
 
+        ArrayList<String> badges = new ArrayList<>();
+        if (event.getConfig().getOwnersAsList().contains(event.getAuthor().getIdLong())) {
+            badges.add("developer.png");
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(event.getDatabase().getCreateTime(event.getAuthor()));
+        Calendar max = Calendar.getInstance();
+        max.set(2018, 12, 31);
+        if (calendar.before(max)) {
+            badges.add("early-user.png");
+        }
+
+        int i = 0;
+        for (String filename:badges) {
+            int plus = i*70;
+            g.drawImage(ImageIO.read(new File("./profile/"+filename)), 320+plus, 190, 70, 70, null);
+            i++;
+        }
+
         // add Details
-        g.drawString("Coins", 115, 400);
-        g.drawString(String.valueOf(event.getDatabase().getCoins(event.getAuthor())), 320, 400);
+        g.drawString("Coins", 100, 370);
+        g.drawString(String.valueOf(event.getDatabase().getCoins(event.getAuthor())), 320, 370);
+
+        g.drawString("Miner", 100, 440);
+        g.drawString(String.valueOf(event.getDatabase().getMinerfromUser(event.getAuthor()).size()), 320, 440);
 
         g.dispose();
 
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(image, "jpg", os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        event.getChannel().sendFile(new ByteArrayInputStream(os.toByteArray()), "join.jpg").queue();
+        File file = new File("profile.png");
+        file.createNewFile();
+        ImageIO.write(image, "png", file);
+        event.getChannel().sendFile(file, file.getName()).queue();
     }
 
     @Override
