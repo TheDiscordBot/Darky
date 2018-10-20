@@ -55,25 +55,25 @@ class CommandListener extends ListenerAdapter {
                     try {
                         database.createIfNotExists(event.getMember());
                         if (hasPerms(event.getMember(), cmd)) {
-                        if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
-                                event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
-                            database.setCoins(event.getAuthor(), database.getCoins(event.getAuthor())+1);
-                            cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database, config),
-                                    event.getMember(), channel, cmd.getArgs());
-                        } else {
-                            var desc = new StringBuilder().append("**__Required Permissions:__**\n\n");
-                            for (var p: cmd.getExecutor().requiredPermissions()) {
-                                if (!event.getGuild().getSelfMember().hasPermission(p)) {
-                                    desc.append(p.getName()).append("\n");
-                                }
-                            }
+                                if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
+                                        event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
+                                    database.setCoins(event.getAuthor(), database.getCoins(event.getAuthor())+1);
+                                    cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database, config),
+                                            event.getMember(), channel, cmd.getArgs());
+                                } else {
+                                    var desc = new StringBuilder().append("**__Required Permissions:__**\n\n");
+                                    for (var p: cmd.getExecutor().requiredPermissions()) {
+                                        if (!event.getGuild().getSelfMember().hasPermission(p)) {
+                                            desc.append(p.getName()).append("\n");
+                                        }
+                                    }
 
-                            event.getChannel().sendMessage(new EmbedBuilder()
-                                    .setColor(new Color(231,76,60))
-                                    .setTitle("Missing permissions")
-                                    .setDescription(desc.toString())
-                                    .build()).queue();
-                        }
+                                    event.getChannel().sendMessage(new EmbedBuilder()
+                                            .setColor(new Color(231,76,60))
+                                            .setTitle("Missing permissions")
+                                            .setDescription(desc.toString())
+                                            .build()).queue();
+                                }
                         } else sendMessage(database, channel, "Error!", "You haven't the permission to do that!", event.getAuthor()).queue();
                     } catch (Throwable t) {
                         event.getChannel().sendMessage(new EmbedBuilder()
@@ -100,6 +100,8 @@ class CommandListener extends ListenerAdapter {
     private boolean hasPerms(Member member, CommandEvent.Command cmd) {
         String perm = Darky.getPermission(cmd.getExecutor());
         if (config.getOwnersAsList().contains(member.getUser().getIdLong())) return true;
+        if (cmd.getExecutor().getClass().getPackageName().endsWith("owner")) return false;
+        if (member.isOwner()) return true;
         ArrayList<String> perms = new ArrayList<>(Arrays.asList(database.getPermissions(member)));
         String[] split = perm.split("\\.");
         if (split.length==2) if (perms.contains(split[0]+".*")) return true;

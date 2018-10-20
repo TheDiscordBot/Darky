@@ -105,6 +105,7 @@ public class Config {
         this.shards = 1;
         this.token = "Your token";
         this.errorChannel = 0;
+        this.githubtoken = "Your oauth token";
     }
 
     private void createConfig() {

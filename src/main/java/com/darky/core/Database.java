@@ -131,8 +131,12 @@ public class Database {
 
     public String[] getPermissions(Member member) {
         var s = getFirst("permissions", Statements.selectFromMember, String.class, member.getUser().getIdLong(), member.getGuild().getIdLong());
-        var split = s.split(",");
+        var split = s.split(", ");
         return split;
+    }
+
+    public List<String> getPermissionsAsList(Member member) {
+        return Arrays.asList(getPermissions(member));
     }
 
     public void addPermissions(Member member, String... permissions) {

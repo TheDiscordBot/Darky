@@ -1,17 +1,14 @@
 package com.darky.core;
 
 import com.darky.commands.moderation.BanCommand;
-import com.darky.commands.user.HelpCommand;
-import com.darky.commands.user.MinerCommand;
-import com.darky.commands.user.PingCommand;
-import com.darky.commands.user.RepoCommand;
+import com.darky.commands.moderation.PermissionCommand;
+import com.darky.commands.user.*;
 import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.ReadyListener;
-import com.darky.listeners.RegisterListener;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -50,7 +47,7 @@ public class Darky extends ListenerAdapter {
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(config.getToken())
                 .setShardsTotal(config.getShards())
-                .addEventListeners(new RegisterListener(database), new MentionListener(database), new DarkcoinListener(database), new ReadyListener(config));
+                .addEventListeners(new MentionListener(database), new DarkcoinListener(database), new ReadyListener(config));
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
@@ -76,6 +73,8 @@ public class Darky extends ListenerAdapter {
                 .put(new MinerCommand(), "miner")
                 .put(new PingCommand(), "ping")
                 .put(new RepoCommand(repo), "repo")
+                .put(new ProfileCommand(), "profile")
+                .put(new PermissionCommand(), "permission")
                 .activate();
     }
 
