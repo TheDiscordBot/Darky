@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +70,17 @@ public class Database {
         return miners;
     }
 
+    public List<Miner> getMinerfromUser(User user) {
+        ArrayList<Miner> miners = (ArrayList<Miner>) this.getAllMiners();
+        ArrayList<Miner> yourminers = new ArrayList<>();
+        for (Miner miner:miners) {
+            if (miner.getUser_id()==user.getIdLong()) {
+                yourminers.add(miner);
+            }
+        }
+        return yourminers;
+    }
+
     public void setMiner(Miner miner) {
         this.executeUpdate(Statements.updateMiner, miner.getMinedcoins(), miner.getChance(), miner.getMiner_id());
     }
@@ -77,9 +89,21 @@ public class Database {
         this.executeUpdate(Statements.insertMiner, user_id);
     }
 
+    public long getCreateTime(User user) {
+        try (var statement = connection.prepareStatement("SELECT * FROM `Discord_user` WHERE user_id="+user.getIdLong()+";")) {
+            var set = statement.executeQuery();
+            if (set.next()) {
+                return set.getLong("created");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public void createIfNotExists(User user) {
         if (this.getFirst("entries", Statements.countUsers, Integer.TYPE, user.getIdLong()) == 0) {
-            this.executeUpdate(Statements.insertUser, user.getIdLong());
+            this.executeUpdate(Statements.insertUser, user.getIdLong(), System.currentTimeMillis());
         }
     }
 
@@ -192,7 +216,7 @@ public class Database {
     private static class Statements {
         public static String[] createTables = {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
-                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',coins BIGINT NOT NULL DEFAULT '100',PRIMARY KEY (user_id));",
+                "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',coins BIGINT NOT NULL DEFAULT '100',created BIGINT NOT NULL,PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,permissions VARCHAR(80) NOT NULL DEFAULT 'user.*',UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
                         " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));",
                 "CREATE TABLE IF NOT EXISTS Darkcoin (user_id BIGINT NOT NULL,minedcoins BIGINT NOT NULL DEFAULT '0',chance BIGINT NOT NULL DEFAULT '1',miner_id BIGINT NOT NULL AUTO_INCREMENT," +
@@ -200,7 +224,7 @@ public class Database {
         };
         public static String selectFromUser = "SELECT * FROM Discord_user WHERE user_id = ?;";
         public static String selectFromMember = "SELECT * FROM Discord_member WHERE user_id = ? AND guild_id = ?;";
-        public static String insertUser = "INSERT INTO Discord_user (user_id) VALUES (?);";
+        public static String insertUser = "INSERT INTO Discord_user (user_id, created) VALUES (?, ?);";
         public static String insertGuild = "INSERT INTO Discord_guild (guild_id) VALUE (?);";
         public static String insertMember = "INSERT INTO Discord_member(guild_id, user_id) VALUES (?, ?);";
         public static String countUsers = "SELECT COUNT(*) AS entries FROM Discord_user WHERE user_id = ?;";

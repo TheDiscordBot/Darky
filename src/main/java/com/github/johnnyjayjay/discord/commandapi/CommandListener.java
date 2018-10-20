@@ -53,11 +53,12 @@ class CommandListener extends ListenerAdapter {
                 CommandEvent.Command cmd = CommandEvent.parseCommand(raw, prefix, settings);
                 if (cmd.getExecutor() != null) {
                     try {
+                        database.createIfNotExists(event.getMember());
                         if (hasPerms(event.getMember(), cmd)) {
                         if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
                                 event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
                             database.setCoins(event.getAuthor(), database.getCoins(event.getAuthor())+1);
-                            cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database),
+                            cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database, config),
                                     event.getMember(), channel, cmd.getArgs());
                         } else {
                             var desc = new StringBuilder().append("**__Required Permissions:__**\n\n");
