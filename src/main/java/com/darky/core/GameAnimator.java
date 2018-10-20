@@ -12,7 +12,7 @@ public class GameAnimator {
             Arrays.asList(
                     Game.playing("with Bulby..."),
                     Game.listening("commands..."),
-                    Game.streaming("your data to the DB...", ""),
+                    Game.streaming("your data to the DB...", "https://www.twitch.tv/darky_devs"),
                     Game.watching("on all these Users..."),
                     Game.playing("on Discord!"),
                     Game.listening("events..."),
