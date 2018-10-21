@@ -75,6 +75,7 @@ public class Darky extends ListenerAdapter {
                 .put(new RepoCommand(repo), "repo")
                 .put(new PermissionCommand(), "permission")
                 .put(new BuyCommand(), "buy")
+                .put(new ProfileCommand(), "profile")
                 .activate();
     }
 
