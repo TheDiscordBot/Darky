@@ -13,12 +13,35 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>7</source>
-                    <target>7</target>
+                    <source>10</source>
+                    <target>10</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <developers>
+        <developer>
+            <id>Hax#6775</id>
+            <name>Hax</name>
+            <email>hax@bigbotnetwork.de</email>
+            <url>https://hax.bigbotnetwork.de/</url>
+            <timezone>Europe/Berlin</timezone>
+            <properties>
+                <picUrl>https://hax.bigbotnetwork.de/images/avatar.jpg</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>Stu#9999</id>
+            <name>Stu</name>
+            <email>stu@stupreme.de</email>
+            <url>http://www.stupreme.de/index.html</url>
+            <timezone>Europe/Berlin</timezone>
+            <properties>
+                <picUrl>http://images.stupreme.de/pb.gif</picUrl>
+            </properties>
+        </developer>
+    </developers>
 
     <repositories>
         <repository>
@@ -27,22 +50,47 @@
             <url>http://jcenter.bintray.com</url>
         </repository>
     </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>3.8.0_430</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.8.0-beta2</version>
+        </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180813</version>
         </dependency>
         <dependency>
-            <groupId>com.github.johnnyjayjay</groupId>
-            <artifactId>CommandAPI</artifactId>
-            <version>3.2</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.94</version>
         </dependency>
     </dependencies>
 </project>
