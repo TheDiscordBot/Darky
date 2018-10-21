@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
  */
 public class Emotes {
     private static List<Emote> emotes;
-    private static final Logger logger = LoggerFactory.getLogger(Emotes.class);
 
     public static void init(String emotePath, Guild guild) throws IOException {
         var files = new File(emotePath).listFiles();

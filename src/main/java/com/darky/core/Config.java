@@ -72,7 +72,7 @@ public class Config {
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 
-    static Config loadConfig(String path) {
+    public static Config loadConfig(String path) {
         var config = new Config(path);
         if (!Files.exists(Paths.get(path))) {
             config.createConfig();
@@ -139,19 +139,19 @@ public class Config {
     public int getShards() {
         return shards;
     }
-    public String getDb_host() {
+    public String getDbHost() {
         return db_host;
     }
-    public String getDb_user() {
+    public String getDbUser() {
         return db_user;
     }
-    public String getDb_pw() {
+    public String getDbPw() {
         return db_pw;
     }
-    public String getDb_name() {
+    public String getDbName() {
         return db_name;
     }
-    public String getDb_port() {
+    public String getDbPort() {
         return db_port;
     }
     public long getErrorChannel() {

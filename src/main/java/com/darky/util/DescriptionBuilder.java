@@ -18,7 +18,6 @@ import java.util.Set;
 public class DescriptionBuilder {
     private List<String> usages;
     private Set<String> perms;
-    private EmbedBuilder builder;
     private String description;
     private Color color;
 

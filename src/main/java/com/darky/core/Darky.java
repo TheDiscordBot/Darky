@@ -95,4 +95,12 @@ public class Darky extends ListenerAdapter {
     public ShardManager getShardManager() {
         return shardManager;
     }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
 }

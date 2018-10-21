@@ -37,14 +37,14 @@ public class MinerCommand extends AbstractCommand {
         ArrayList<Miner> miners = (ArrayList<Miner>) event.getDatabase().getAllMiners();
         ArrayList<Miner> yourminers = new ArrayList<>();
         for (Miner miner:miners) {
-            if (miner.getUser_id()==member.getUser().getIdLong()) {
+            if (miner.getUserID()==member.getUser().getIdLong()) {
                 yourminers.add(miner);
             }
         }
         EmbedBuilder embedBuilder = new EmbedBuilder();
         for (int i = 0; yourminers.size()>i; i++) {
             Miner miner = yourminers.get(i);
-            embedBuilder.addField("Miner "+(i+1), "Chance: "+miner.getChance()+"\nCoins: "+miner.getMinedcoins()+"\nMiner ID: "+miner.getMiner_id(), true);
+            embedBuilder.addField("Miner "+(i+1), "Chance: "+miner.getChance()+"\nCoins: "+miner.getMinedcoins()+"\nMiner ID: "+miner.getMinerID(), true);
         }
         sendMessage(event.getDatabase(), channel, "Miner Info", "Here are your miners!", member.getUser(), false, null, embedBuilder).queue();
     }
@@ -54,7 +54,7 @@ public class MinerCommand extends AbstractCommand {
         ArrayList<Miner> miners = (ArrayList<Miner>) event.getDatabase().getAllMiners();
         ArrayList<Miner> yourminers = new ArrayList<>();
         for (Miner miner:miners) {
-            if (miner.getUser_id()==member.getUser().getIdLong()) {
+            if (miner.getUserID()==member.getUser().getIdLong()) {
                 yourminers.add(miner);
             }
         }

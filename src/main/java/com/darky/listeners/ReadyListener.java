@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class ReadyListener extends ListenerAdapter {
 
-    Logger logger = LoggerFactory.getLogger("Darky-ReadyListener");
+    private Logger logger = LoggerFactory.getLogger("Darky-ReadyListener");
 
     private Config config;
 

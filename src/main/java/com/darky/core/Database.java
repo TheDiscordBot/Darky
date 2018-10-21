@@ -28,12 +28,12 @@ public class Database {
 
     public Database connect() {
         logger.info("connecting to DB...");
-        String sql = "CREATE DATABASE IF NOT EXISTS " + config.getDb_name() + ";";
+        String sql = "CREATE DATABASE IF NOT EXISTS " + config.getDbName() + ";";
         try (Connection connection = DriverManager.getConnection(
-                format("jdbc:mysql://%s:%s/?serverTimezone=UTC&useSSL=false", config.getDb_host(), config.getDb_port()), config.getDb_user(), config.getDb_pw());
+                format("jdbc:mysql://%s:%s/?serverTimezone=UTC&useSSL=false", config.getDbHost(), config.getDbPort()), config.getDbUser(), config.getDbPw());
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.executeUpdate();
-            this.connection = DriverManager.getConnection(format("jdbc:mysql://%s:%s/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", config.getDb_host(), config.getDb_port(), config.getDb_name()), config.getDb_user(), config.getDb_pw());
+            this.connection = DriverManager.getConnection(format("jdbc:mysql://%s:%s/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", config.getDbHost(), config.getDbPort(), config.getDbName()), config.getDbUser(), config.getDbPw());
         } catch (SQLException e) {
             logger.error("Exception caught while connecting", e);
             System.exit(1);
@@ -73,7 +73,7 @@ public class Database {
         ArrayList<Miner> miners = (ArrayList<Miner>) this.getAllMiners();
         ArrayList<Miner> yourminers = new ArrayList<>();
         for (Miner miner:miners) {
-            if (miner.getUser_id()==user.getIdLong()) {
+            if (miner.getUserID()==user.getIdLong()) {
                 yourminers.add(miner);
             }
         }
@@ -81,7 +81,7 @@ public class Database {
     }
 
     public void setMiner(Miner miner) {
-        this.executeUpdate(Statements.updateMiner, miner.getMinedcoins(), miner.getChance(), miner.getMiner_id());
+        this.executeUpdate(Statements.updateMiner, miner.getMinedcoins(), miner.getChance(), miner.getMinerID());
     }
 
     public void insertMiner(long user_id) {
