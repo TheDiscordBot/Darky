@@ -25,48 +25,7 @@ public class MinerCommand extends AbstractCommand {
 
     @SubCommand(args = "buy", moreArgs = true)
     public void onMinerBuy(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        if (args.length>1) {
-            switch (args[1].toLowerCase()) {
-                case "miner":
-                    if (args.length == 3) {
-                        int coins = 100 * Integer.parseInt(args[2]);
-                        if (event.getDatabase().getCoins(event.getAuthor()) >= coins) {
-                            for (int i = 0; Integer.parseInt(args[2]) > i; i++) {
-                                event.getDatabase().insertMiner(member.getUser().getIdLong());
-                            }
-                            event.getDatabase().setCoins(event.getAuthor(), event.getDatabase().getCoins(event.getAuthor()) - coins);
-                            sendMessage(event.getDatabase(), channel, "Success!", "I bought you " + args[2] + " miner!", member.getUser(), true).queue();
-                        } else sendMessage(event.getDatabase(), event.getChannel(), "Error!", "You haven't enough coins!", event.getAuthor()).queue();
-                    } else {
-                        if (event.getDatabase().getCoins(event.getAuthor()) >= 100) {
-                            event.getDatabase().insertMiner(member.getUser().getIdLong());
-                            sendMessage(event.getDatabase(), channel, "Success!", "I bought you a miner!", member.getUser(), true).queue();
-                            event.getDatabase().setCoins(event.getAuthor(), event.getDatabase().getCoins(event.getAuthor()) - 100);
-                        } else
-                            sendMessage(event.getDatabase(), event.getChannel(), "Error!", "You haven't enough coins!", event.getAuthor()).queue();
-                    }
-                    break;
-
-                case "chance":
-                    if (args.length < 4) return;
-                    int minerid = Integer.parseInt(args[2]);
-                    int coins = 100;
-                    int many = 1;
-                    if (args.length == 4) {
-                        many = Integer.parseInt(args[3]);
-                    }
-                    coins = many * coins;
-                    if (event.getDatabase().getCoins(event.getAuthor()) >= coins) {
-                        Miner miner = event.getDatabase().getMinerfromMinerID(minerid);
-                        miner.setChance(miner.getChance() + Integer.parseInt(args[3]));
-                        event.getDatabase().setMiner(miner);
-                        event.getDatabase().setCoins(event.getAuthor(), event.getDatabase().getCoins(event.getAuthor()) - coins);
-                        sendMessage(event.getDatabase(), channel, "Success!", "I bought you " + many + " Chances!", member.getUser(), true).queue();
-                    } else
-                        sendMessage(event.getDatabase(), event.getChannel(), "Error!", "You haven't enough coins!", event.getAuthor()).queue();
-                    break;
-            }
-        } else onFalseUsage(event, member, channel, args);
+        sendMessage(event.getDatabase(), event.getChannel(), "Error!", "This command is now named buy :wink:", event.getAuthor()).queue();
     }
 
     @SubCommand(args = "list")
@@ -109,8 +68,6 @@ public class MinerCommand extends AbstractCommand {
     public Message info(Member member, String prefix, Set<String> labels, Database database) {
         return new DescriptionBuilder()
                 .setColor(database.getColor(member.getUser()))
-                .addUsage(prefix, labels, "buy miner [how many]", "Buys you Miner")
-                .addUsage(prefix, labels, "buy chance (minerid) [how many]", "Buys you Chances")
                 .addUsage(prefix, labels, "list", "List your Miners")
                 .addUsage(prefix, labels, "transfer", "Transfer money to your Account")
                 .build();

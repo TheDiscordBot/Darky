@@ -31,6 +31,7 @@ public class HelpCommand extends AbstractHelpCommand {
 
         Set<String> categories = new HashSet<>();
         commands.forEach((label, cmd) -> {
+            if (!cmd.getClass().getPackageName().equals("com.darky.commands.owner"))
                 categories.add(cmd.getClass().getPackage().getName().replace("com.darky.commands.", ""));
         });
 
