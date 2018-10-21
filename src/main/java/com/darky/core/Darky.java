@@ -7,6 +7,7 @@ import com.darky.commands.moderation.PermissionCommand;
 import com.darky.commands.owner.BlacklistCommand;
 import com.darky.commands.owner.CooldownCommand;
 import com.darky.commands.owner.RegisterCommand;
+import com.darky.commands.owner.TestCommand;
 import com.darky.commands.user.*;
 import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
@@ -85,6 +86,7 @@ public class Darky extends ListenerAdapter {
                 .put(new ProfileCommand(), "profile", "p")
                 .put(new CooldownCommand(), "cooldown", "cd")
                 .put(new BlacklistCommand(), "blacklist", "bl")
+                .put(new TestCommand(), "test")
                 .activate();
     }
 
