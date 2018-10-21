@@ -47,15 +47,8 @@ public class MinerCommand extends AbstractCommand {
 
     @SubCommand(args = "transfer")
     public void onMinerTransferAll(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        ArrayList<Miner> miners = (ArrayList<Miner>) event.getDatabase().getAllMiners();
-        ArrayList<Miner> yourminers = new ArrayList<>();
-        for (Miner miner:miners) {
-            if (miner.getUserID()==member.getUser().getIdLong()) {
-                yourminers.add(miner);
-            }
-        }
         long coins = 0;
-        for (Miner miner:yourminers) {
+        for (Miner miner:event.getDatabase().getMinerfromUser(event.getAuthor())) {
             coins+=miner.getMinedcoins();
             miner.setMinedcoins(0);
             event.getDatabase().setMiner(miner);
