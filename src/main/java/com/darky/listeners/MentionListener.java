@@ -46,6 +46,7 @@ public class MentionListener extends ListenerAdapter {
             builder.addField("Join our Dev Server!", "[Click here!](https://discord.gg/hxt7SvG)", true);
             builder.addField("Github", "[Click here!](https://github.com/TheDiscordBot/Darky)",false);
             builder.addField("Twitch", "[Click here!](https://www.twitch.tv/darky_devs)", false);
+            builder.addField("We are sponsored by LudusHosting", "[Click here!](https://ludus-hosting.de/aff.php?aff=45)", false);
             Messages.sendMessage(database, event.getChannel(), null, null, event.getAuthor(), false, null, builder).queue();
 
         }

@@ -45,6 +45,7 @@ public class HelpCommand extends AbstractHelpCommand {
             embed.addField(firstLetterUpperCase(c), String.join(",", list.values()), false);
         });
 
+        embed.addField("We are sponsored by LudusHosting", "[Click here!](https://ludus-hosting.de/aff.php?aff=45)", false);
         sendMessage(event.getDatabase(), event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
 
     }
