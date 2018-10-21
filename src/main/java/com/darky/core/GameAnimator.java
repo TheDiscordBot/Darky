@@ -16,7 +16,8 @@ public class GameAnimator {
                     Game.watching("on all these Users..."),
                     Game.playing("on Discord!"),
                     Game.listening("events..."),
-                    Game.watching("on all these Guilds...")
+                    Game.watching("on all these Guilds..."),
+                    Game.playing("with LudusHosting! (Our sponsor)")
             )
     );
 
