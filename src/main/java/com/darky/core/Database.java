@@ -61,7 +61,7 @@ public class Database {
         try (var statement = connection.prepareStatement("SELECT * FROM `Darkcoin`")) {
             var set = statement.executeQuery();
             while (set.next()) {
-                miners.add(new Miner(set.getLong("user_id"), set.getLong("minedcoins"), set.getLong("chance"), set.getLong("miner_id")));
+                miners.add(new Miner(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
