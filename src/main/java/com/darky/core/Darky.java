@@ -4,6 +4,8 @@ import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.BanCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.moderation.PermissionCommand;
+import com.darky.commands.owner.BlacklistCommand;
+import com.darky.commands.owner.CooldownCommand;
 import com.darky.commands.owner.RegisterCommand;
 import com.darky.commands.user.*;
 import com.darky.listeners.DarkcoinListener;
@@ -22,6 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -34,6 +39,8 @@ public class Darky extends ListenerAdapter {
     private Logger logger = LoggerFactory.getLogger(Darky.class);
     private Database database;
     private static ScheduledExecutorService executor;
+    private static Map<Long, Long> cooldownsPerUser = new HashMap<>(); // Userid, cooldown
+    private static ArrayList<Long> blacklist = new ArrayList<>(); // Userid
 
     public static void main(String[] args) {
         new Darky().run();
@@ -70,12 +77,14 @@ public class Darky extends ListenerAdapter {
                 .put(new KickCommand(), "kick")
                 .put(new RegisterCommand(), "register")
                 .put(new HelpCommand(), "help", "helpme")
-                .put(new MinerCommand(), "miner")
+                .put(new MinerCommand(), "miner", "m")
                 .put(new PingCommand(), "ping")
                 .put(new RepoCommand(repo), "repo")
                 .put(new PermissionCommand(), "permission")
                 .put(new BuyCommand(), "buy")
-                .put(new ProfileCommand(), "profile")
+                .put(new ProfileCommand(), "profile", "p")
+                .put(new CooldownCommand(), "cooldown", "cd")
+                .put(new BlacklistCommand(), "blacklist", "bl")
                 .activate();
     }
 
@@ -101,5 +110,13 @@ public class Darky extends ListenerAdapter {
 
     public Database getDatabase() {
         return database;
+    }
+
+    public static Map<Long, Long> getCooldownsPerUser() {
+        return cooldownsPerUser;
+    }
+
+    public static ArrayList<Long> getBlacklist() {
+        return blacklist;
     }
 }

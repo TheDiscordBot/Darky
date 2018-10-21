@@ -38,13 +38,15 @@ class CommandListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         TextChannel channel = event.getChannel();
-        if (!settings.getBlacklistedChannels().contains(channel.getIdLong()) && (!event.getAuthor().isBot() || settings.botsMayExecute())) {
+        if (!settings.getBlacklistedChannels().contains(channel.getIdLong()) && (!event.getAuthor().isBot() || settings.botsMayExecute()) && (!Darky.getBlacklist().contains(event.getAuthor().getIdLong()))) {
             String raw = event.getMessage().getContentRaw();
             String prefix = settings.getPrefix(event.getGuild().getIdLong());
             if (raw.startsWith(prefix)) {
                 long timestamp = System.currentTimeMillis();
                 long userId = event.getAuthor().getIdLong();
-                if (cooldowns.containsKey(userId) && (timestamp - cooldowns.get(userId)) < settings.getCooldown()) {
+                long cooldown = settings.getCooldown();
+                if (Darky.getCooldownsPerUser().containsKey(userId)) cooldown = Darky.getCooldownsPerUser().get(userId);
+                if (cooldowns.containsKey(userId) && (timestamp - cooldowns.get(userId)) < cooldown) {
                     if (settings.isResetCooldown())
                         cooldowns.put(userId, timestamp);
                     return;
@@ -58,7 +60,7 @@ class CommandListener extends ListenerAdapter {
                                 if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
                                         event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
                                     database.setCoins(event.getAuthor(), database.getCoins(event.getAuthor())+1);
-                                    cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database, config),
+                                    cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database, config, this),
                                             event.getMember(), channel, cmd.getArgs());
                                 } else {
                                     var desc = new StringBuilder().append("**__Required Permissions:__**\n\n");

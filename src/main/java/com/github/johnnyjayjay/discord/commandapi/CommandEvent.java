@@ -26,13 +26,19 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     private final CommandSettings settings;
     private Database database;
     private Config config;
+    private CommandListener listener;
 
-    public CommandEvent(JDA api, long responseNumber, Message message, Command command, CommandSettings settings, Database database, Config config) {
+    public CommandEvent(JDA api, long responseNumber, Message message, Command command, CommandSettings settings, Database database, Config config, CommandListener listener) {
         super(api, responseNumber, message);
         this.command = command;
         this.settings = settings;
         this.database = database;
         this.config = config;
+        this.listener = listener;
+    }
+
+    public CommandListener getListener() {
+        return listener;
     }
 
     public Config getConfig() {
