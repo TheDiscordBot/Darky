@@ -3,7 +3,6 @@ package com.darky.commands.user;
 import com.darky.core.Database;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -11,15 +10,9 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class ProfileCommand implements ICommand {
     @Override

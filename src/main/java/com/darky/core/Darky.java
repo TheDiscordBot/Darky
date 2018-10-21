@@ -1,11 +1,14 @@
 package com.darky.core;
 
-import com.darky.commands.moderation.BanCommand;
-import com.darky.commands.moderation.PermissionCommand;
-import com.darky.commands.user.*;
 import com.darky.commands.misc.LinksCommand;
+import com.darky.commands.moderation.BanCommand;
 import com.darky.commands.moderation.KickCommand;
+import com.darky.commands.moderation.PermissionCommand;
 import com.darky.commands.owner.RegisterCommand;
+import com.darky.commands.user.HelpCommand;
+import com.darky.commands.user.MinerCommand;
+import com.darky.commands.user.PingCommand;
+import com.darky.commands.user.RepoCommand;
 import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.ReadyListener;
@@ -87,5 +90,9 @@ public class Darky extends ListenerAdapter {
                 cmd.getClass().getName().replace(cmd.getClass().getPackageName()+".", "").substring(1).replace("Command", "");
         return first+"."+second;
 
+    }
+
+    public ShardManager getShardManager() {
+        return shardManager;
     }
 }

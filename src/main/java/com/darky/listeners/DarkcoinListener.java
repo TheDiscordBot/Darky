@@ -1,6 +1,5 @@
 package com.darky.listeners;
 
-import com.darky.core.Darky;
 import com.darky.core.Database;
 import com.darky.core.entities.Miner;
 import net.dv8tion.jda.core.events.ReadyEvent;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class DarkcoinListener extends ListenerAdapter {
 

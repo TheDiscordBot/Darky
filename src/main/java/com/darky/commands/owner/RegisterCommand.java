@@ -1,14 +1,10 @@
 package com.darky.commands.owner;
 
-import com.darky.core.Database;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-
-import java.util.Set;
 
 import static com.darky.core.Messages.editMessage;
 import static com.darky.core.Messages.sendMessage;

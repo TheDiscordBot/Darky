@@ -4,15 +4,12 @@ import com.darky.core.Database;
 import com.darky.util.DescriptionBuilder;
 import com.github.johnnyjayjay.discord.commandapi.AbstractCommand;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
-import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import com.github.johnnyjayjay.discord.commandapi.SubCommand;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import static com.darky.core.Messages.sendMessage;

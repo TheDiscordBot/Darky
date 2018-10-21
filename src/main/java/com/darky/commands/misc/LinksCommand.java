@@ -2,23 +2,20 @@ package com.darky.commands.misc;
 
 import com.darky.core.Database;
 import com.darky.util.DescriptionBuilder;
+import com.darky.util.emotes.Emotes;
 import com.darky.util.reactions.Builder;
 import com.darky.util.reactions.Reactions;
-import com.darky.util.emotes.Emotes;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.List;
 import java.util.Set;
 
 import static com.darky.core.Messages.editMessage;
-import static com.darky.core.Messages.sendMessage;
 
 /**
  * https://github.com/Stupremee
