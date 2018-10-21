@@ -17,6 +17,7 @@ import java.util.*;
 public class ProfileCommand implements ICommand {
     @Override
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
+        if (event.getMessage().getMentionedMembers().size()==1) member=event.getMessage().getMentionedMembers().get(0);
         BufferedImage image = ImageIO.read(new File("./profile/default.png"));
         Graphics2D g = image.createGraphics();
         Map<RenderingHints.Key, Object> hints = new HashMap<>();
@@ -31,16 +32,16 @@ public class ProfileCommand implements ICommand {
         g.setFont(font);
 
         // add Avatar and Name
-        g.drawString(event.getMember().getEffectiveName(), 320, 180);
-        g.drawImage(ImageIO.read(new URL(event.getAuthor().getAvatarUrl()).openConnection().getInputStream()), 84, 87, 200, 200, null);
+        g.drawString(member.getEffectiveName(), 320, 180);
+        g.drawImage(ImageIO.read(new URL(member.getUser().getAvatarUrl()).openConnection().getInputStream()), 84, 87, 200, 200, null);
 
         ArrayList<String> badges = new ArrayList<>();
-        if (event.getConfig().getOwnersAsList().contains(event.getAuthor().getIdLong())) {
+        if (event.getConfig().getOwnersAsList().contains(member.getUser().getIdLong())) {
             badges.add("developer.png");
         }
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(event.getDatabase().getCreateTime(event.getAuthor()));
+        calendar.setTimeInMillis(event.getDatabase().getCreateTime(member.getUser()));
         Calendar max = Calendar.getInstance();
         max.set(2018, 12, 31);
         if (calendar.before(max)) {
@@ -56,10 +57,10 @@ public class ProfileCommand implements ICommand {
 
         // add Details
         g.drawString("Coins", 100, 370);
-        g.drawString(String.valueOf(event.getDatabase().getCoins(event.getAuthor())), 320, 370);
+        g.drawString(String.valueOf(event.getDatabase().getCoins(member.getUser())), 320, 370);
 
         g.drawString("Miner", 100, 440);
-        g.drawString(String.valueOf(event.getDatabase().getMinerfromUser(event.getAuthor()).size()), 320, 440);
+        g.drawString(String.valueOf(event.getDatabase().getMinerfromUser(member.getUser()).size()), 320, 440);
 
         g.dispose();
 
