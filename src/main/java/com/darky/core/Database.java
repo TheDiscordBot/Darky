@@ -70,14 +70,29 @@ public class Database {
     }
 
     public List<Miner> getMinerfromUser(User user) {
-        ArrayList<Miner> miners = (ArrayList<Miner>) this.getAllMiners();
-        ArrayList<Miner> yourminers = new ArrayList<>();
-        for (Miner miner:miners) {
-            if (miner.getUserID()==user.getIdLong()) {
-                yourminers.add(miner);
+        ArrayList<Miner> miners = new ArrayList<>();
+        try (var statement = connection.prepareStatement("SELECT * FROM Darkcoin WHERE user_id=?")) {
+            statement.setLong(1, user.getIdLong());
+            var set = statement.executeQuery();
+            while (set.next()) {
+                miners.add(new Miner(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance")));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return yourminers;
+        return miners;
+    }
+
+    public Miner getMinerfromMinerID(Integer minerid) {
+        try (var statement = connection.prepareStatement("SELECT * FROM Darkcoin WHERE miner_id=?")) {
+            statement.setLong(1, minerid);
+            var set = statement.executeQuery();
+            if (set.next())
+                return new Miner(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setMiner(Miner miner) {
