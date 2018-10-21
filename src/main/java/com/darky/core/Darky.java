@@ -73,7 +73,6 @@ public class Darky extends ListenerAdapter {
                 .put(new MinerCommand(), "miner")
                 .put(new PingCommand(), "ping")
                 .put(new RepoCommand(repo), "repo")
-                .put(new ProfileCommand(), "profile")
                 .put(new PermissionCommand(), "permission")
                 .activate();
     }
