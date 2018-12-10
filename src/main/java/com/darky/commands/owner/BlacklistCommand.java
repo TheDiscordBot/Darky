@@ -13,14 +13,14 @@ public class BlacklistCommand extends AbstractCommand {
 
     @SubCommand
     public void onHelp(CommandEvent event, Member member, TextChannel channel, String[] args) {
-        sendMessage(event.getDatabase(), event.getChannel(), "Help", "Use\nd!blacklist add @Member\nd!blacklist remove @Member").queue();
+        sendMessage(event.getCache(), event.getChannel(), "Help", "Use\nd!blacklist add @Member\nd!blacklist remove @Member").queue();
     }
 
     @SubCommand(args = {"add", MEMBER_MENTION}, moreArgs = true)
     public void onAdd(CommandEvent event, Member member, TextChannel channel, String[] args) {
         if (args.length==2) {
             Darky.getBlacklist().add(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
-            sendMessage(event.getDatabase(), event.getChannel(), "Success!", "Added "+event.getMessage().getMentionedMembers().get(0).getUser().getName()+" to the blacklist!").queue();
+            sendMessage(event.getCache(), event.getChannel(), "Success!", "Added "+event.getMessage().getMentionedMembers().get(0).getUser().getName()+" to the blacklist!").queue();
         } else onHelp(event, member, channel, args);
     }
 
@@ -28,7 +28,7 @@ public class BlacklistCommand extends AbstractCommand {
     public void onremove(CommandEvent event, Member member, TextChannel channel, String[] args) {
         if (args.length==2) {
             Darky.getBlacklist().remove(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
-            sendMessage(event.getDatabase(), event.getChannel(), "Success!", "Removed "+event.getMessage().getMentionedMembers().get(0).getUser().getName()+" from the blacklist!").queue();
+            sendMessage(event.getCache(), event.getChannel(), "Success!", "Removed "+event.getMessage().getMentionedMembers().get(0).getUser().getName()+" from the blacklist!").queue();
         } else onHelp(event, member, channel, args);
     }
 

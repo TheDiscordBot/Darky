@@ -37,7 +37,7 @@ public class Reactions extends ListenerAdapter {
     }
 
     public static void newMenu(CommandEvent commandEvent, User user, TextChannel channel, EmbedBuilder embedbuilder, Builder... builders) {
-        sendMessage(commandEvent.getDatabase(), channel, null, null, user, true, null, embedbuilder).queue(
+        sendMessage(commandEvent.getCache(), channel, null, null, user, true, null, embedbuilder).queue(
                 msg -> {
                     HashMap<String, Consumer<Menu>> hashMap = new HashMap<>();
                     Arrays.asList(builders).forEach(

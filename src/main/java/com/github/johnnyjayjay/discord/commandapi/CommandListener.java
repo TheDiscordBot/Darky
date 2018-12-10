@@ -2,7 +2,8 @@ package com.github.johnnyjayjay.discord.commandapi;
 
 import com.darky.core.Config;
 import com.darky.core.Darky;
-import com.darky.core.Database;
+import com.darky.core.caching.Cache;
+import com.darky.core.caching.Discord_Member;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -26,13 +27,13 @@ class CommandListener extends ListenerAdapter {
     private Config config;
     private CommandSettings settings;
     private Map<Long, Long> cooldowns; // Long: User id, Long: last timestamp
-    private Database database;
+    private Cache cache;
 
-    public CommandListener(CommandSettings settings, Config config, Database database) {
+    public CommandListener(CommandSettings settings, Config config, Cache cache) {
         this.config = config;
         this.settings = settings;
         this.cooldowns = new HashMap<>();
-        this.database = database;
+        this.cache = cache;
     }
 
     @Override
@@ -55,12 +56,13 @@ class CommandListener extends ListenerAdapter {
                 CommandEvent.Command cmd = CommandEvent.parseCommand(raw, prefix, settings);
                 if (cmd.getExecutor() != null) {
                     try {
-                        database.createIfNotExists(event.getMember());
-                        if (hasPerms(event.getMember(), cmd)) {
+                        cache.createIfNotExist(event.getMember());
+                        Discord_Member discord_member = cache.getMember(event.getMember());
+                        if (hasPerms(event.getMember(), cmd, discord_member)) {
                                 if (event.getGuild().getSelfMember().hasPermission(cmd.getExecutor().requiredPermissions()) ||
                                         event.getGuild().getSelfMember().hasPermission(event.getChannel(), cmd.getExecutor().requiredPermissions())) {
-                                    database.setCoins(event.getAuthor(), database.getCoins(event.getAuthor())+1);
-                                    cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, database, config, this),
+                                    discord_member.getUser(cache).setCoins(discord_member.getUser(cache).getCoins()+1);
+                                    cmd.getExecutor().onCommand(new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), cmd, settings, cache, config, this),
                                             event.getMember(), channel, cmd.getArgs());
                                 } else {
                                     var desc = new StringBuilder().append("**__Required Permissions:__**\n\n");
@@ -76,7 +78,7 @@ class CommandListener extends ListenerAdapter {
                                             .setDescription(desc.toString())
                                             .build()).queue();
                                 }
-                        } else sendMessage(database, channel, "Error!", "You haven't the permission to do that!", event.getAuthor()).queue();
+                        } else sendMessage(cache, channel, "Error!", "You haven't the permission to do that!", event.getAuthor()).queue();
                     } catch (Throwable t) {
                         event.getChannel().sendMessage(new EmbedBuilder()
                                 .setColor(Color.RED)
@@ -99,12 +101,12 @@ class CommandListener extends ListenerAdapter {
         }
     }
 
-    private boolean hasPerms(Member member, CommandEvent.Command cmd) {
+    private boolean hasPerms(Member member, CommandEvent.Command cmd, Discord_Member discord_member) {
         String perm = Darky.getPermission(cmd.getExecutor());
         if (config.getOwnersAsList().contains(member.getUser().getIdLong())) return true;
         if (cmd.getExecutor().getClass().getPackageName().endsWith("owner")) return false;
         if (member.isOwner()) return true;
-        ArrayList<String> perms = new ArrayList<>(Arrays.asList(database.getPermissions(member)));
+        ArrayList<String> perms = new ArrayList<>(Arrays.asList(discord_member.getPermissions()));
         String[] split = perm.split("\\.");
         if (split.length==2) if (perms.contains(split[0]+".*")) return true;
         if (perms.contains(perm) || perms.contains("*")) return true;

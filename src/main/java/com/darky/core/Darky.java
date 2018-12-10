@@ -4,14 +4,13 @@ import com.darky.commands.misc.LinksCommand;
 import com.darky.commands.moderation.BanCommand;
 import com.darky.commands.moderation.KickCommand;
 import com.darky.commands.moderation.PermissionCommand;
-import com.darky.commands.owner.BlacklistCommand;
-import com.darky.commands.owner.CooldownCommand;
-import com.darky.commands.owner.RegisterCommand;
-import com.darky.commands.owner.TestCommand;
+import com.darky.commands.owner.*;
 import com.darky.commands.user.*;
+import com.darky.core.caching.Cache;
 import com.darky.listeners.DarkcoinListener;
 import com.darky.listeners.MentionListener;
 import com.darky.listeners.ReadyListener;
+import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
 import com.github.johnnyjayjay.discord.commandapi.CommandSettings;
 import com.github.johnnyjayjay.discord.commandapi.ICommand;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -25,9 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -51,11 +48,12 @@ public class Darky extends ListenerAdapter {
         this.config = Config.loadConfig("config.json");
         this.database = new Database(config).connect();
         executor = Executors.newScheduledThreadPool(config.getThreadPool());
-
+        Cache cache = new Cache(this.database);
+        cache.scan();
         DefaultShardManagerBuilder builder = new DefaultShardManagerBuilder();
         builder.setToken(config.getToken())
                 .setShardsTotal(config.getShards())
-                .addEventListeners(new MentionListener(database), new DarkcoinListener(database), new ReadyListener(config));
+                .addEventListeners(new MentionListener(cache), new DarkcoinListener(cache), new ReadyListener(config));
         try {
             shardManager = builder.build();
         } catch (LoginException e) {
@@ -72,12 +70,12 @@ public class Darky extends ListenerAdapter {
             e.printStackTrace();
         }
 
-        CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config, database);
+        CommandSettings settings = new CommandSettings(config.getPrefix(), shardManager, true, config, cache);
         settings.put(new LinksCommand(), "links")
                 .put(new BanCommand(), "ban")
                 .put(new KickCommand(), "kick")
                 .put(new RegisterCommand(), "register")
-                .put(new HelpCommand(), "help", "helpme")
+                .put(new HelpCommand(), "help", "helpme", "h")
                 .put(new MinerCommand(), "miner", "m")
                 .put(new PingCommand(), "ping")
                 .put(new RepoCommand(repo), "repo")
@@ -87,7 +85,14 @@ public class Darky extends ListenerAdapter {
                 .put(new CooldownCommand(), "cooldown", "cd")
                 .put(new BlacklistCommand(), "blacklist", "bl")
                 .put(new TestCommand(), "test")
+                .put(new CacheCommand(), "cache")
                 .activate();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cache.write();
+            }
+        }, 1000, 60000);
     }
 
     public static ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit timeUnit) {
@@ -100,6 +105,11 @@ public class Darky extends ListenerAdapter {
                 cmd.getClass().getName().replace(cmd.getClass().getPackageName()+".", "").substring(1).replace("Command", "");
         return first+"."+second;
 
+    }
+
+    public static void getHelp(CommandEvent event) {
+        new HelpCommand().provideSpecificHelp(event, event.getCommandSettings().getPrefix(),
+                event.getCommand().getExecutor(), event.getCommandSettings().getLabels(event.getCommand().getExecutor()), event.getCache());
     }
 
     public ShardManager getShardManager() {

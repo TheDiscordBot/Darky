@@ -16,7 +16,7 @@ import static com.darky.core.Messages.sendMessage;
 public class PageSwitcher {
 
     public static void newPageSwitcher(CommandEvent event, TextChannel channel, ArrayList<MessageEmbed.Field> fields, String title, String description, int itemsperpage) {
-        sendMessage(event.getDatabase(), event.getChannel(), "Loading please wait!","Loading...", event.getAuthor()).queue(
+        sendMessage(event.getCache(), event.getChannel(), "Loading please wait!","Loading...", event.getAuthor()).queue(
                 msg -> {
                     onPageSwitch(msg, 0, itemsperpage, fields, title, description, event);
                 }
@@ -36,7 +36,7 @@ public class PageSwitcher {
         msg.addReaction("❌").queue();
         if (position!=fields.size()-1)
             msg.addReaction("➡").queue();
-        editMessage(msg, cmdevent.getDatabase(), title, description, cmdevent.getAuthor(), false, null, builder).queue();
+        editMessage(msg, cmdevent.getCache(), title, description, cmdevent.getAuthor(), false, null, builder).queue();
         msg.getJDA().asBot().getShardManager().addEventListener(new ListenerAdapter() {
             @Override
             public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {

@@ -1,6 +1,6 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
-import com.darky.core.Database;
+import com.darky.core.caching.Cache;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -50,11 +50,11 @@ public final class DefaultHelpCommand extends AbstractHelpCommand {
      * Shows the command info based on the method ICommand#info in an embed.
      */
     @Override
-    public void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels, Database database) {
+    public void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels, Cache cache) {
         if (!event.checkBotPermissions(Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS))
             return;
 
-        event.getChannel().sendMessage(command.info(event.getMember(), prefix, labels, database)).queue();
+        event.getChannel().sendMessage(command.info(event.getMember(), prefix, labels, cache)).queue();
     }
 
     /**
@@ -62,7 +62,7 @@ public final class DefaultHelpCommand extends AbstractHelpCommand {
      * @return A message with content "Shows all available commands or provides help for a specific command."
      */
     @Override
-    public Message info(Member member, String prefix, Set<String> labels, Database database) {
+    public Message info(Member member, String prefix, Set<String> labels, Cache cache) {
         return info;
     }
 }

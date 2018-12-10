@@ -1,6 +1,6 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
-import com.darky.core.Database;
+import com.darky.core.caching.Cache;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -60,7 +60,7 @@ public interface ICommand {
      * @see AbstractHelpCommand
      * @see MessageBuilder
      */
-    default Message info(Member member, String prefix, Set<String> labels, Database database) {
+    default Message info(Member member, String prefix, Set<String> labels, Cache cache) {
         return DEFAULT_INFO;
     }
 

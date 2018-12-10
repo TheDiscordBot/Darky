@@ -1,7 +1,7 @@
 package com.darky.listeners;
 
-import com.darky.core.Database;
 import com.darky.core.Messages;
+import com.darky.core.caching.Cache;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -14,10 +14,10 @@ import java.io.IOException;
 
 public class MentionListener extends ListenerAdapter {
 
-    private Database database;
+    private Cache cache;
 
-    public MentionListener(Database database) {
-        this.database = database;
+    public MentionListener(Cache cache) {
+        this.cache = cache;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MentionListener extends ListenerAdapter {
             builder.addField("Github", "[Click here!](https://github.com/TheDiscordBot/Darky)",false);
             builder.addField("Twitch", "[Click here!](https://www.twitch.tv/darky_devs)", false);
             builder.addField("We are sponsored by LudusHosting", "[Click here!](https://ludus-hosting.de/aff.php?aff=45)", false);
-            Messages.sendMessage(database, event.getChannel(), null, null, event.getAuthor(), false, null, builder).queue();
+            Messages.sendMessage(cache, event.getChannel(), null, null, event.getAuthor(), false, null, builder).queue();
 
         }
     }

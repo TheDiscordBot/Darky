@@ -1,7 +1,7 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
 import com.darky.core.Config;
-import com.darky.core.Database;
+import com.darky.core.caching.Cache;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -24,15 +24,15 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     private final Command command;
     private final CommandSettings settings;
-    private Database database;
     private Config config;
     private CommandListener listener;
+    private Cache cache;
 
-    public CommandEvent(JDA api, long responseNumber, Message message, Command command, CommandSettings settings, Database database, Config config, CommandListener listener) {
+    public CommandEvent(JDA api, long responseNumber, Message message, Command command, CommandSettings settings, Cache cache, Config config, CommandListener listener) {
         super(api, responseNumber, message);
         this.command = command;
         this.settings = settings;
-        this.database = database;
+        this.cache = cache;
         this.config = config;
         this.listener = listener;
     }
@@ -45,8 +45,8 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         return config;
     }
 
-    public Database getDatabase() {
-        return database;
+    public Cache getCache() {
+        return cache;
     }
 
     /**

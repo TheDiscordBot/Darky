@@ -1,6 +1,6 @@
 package com.darky.core;
 
-import com.darky.core.entities.Miner;
+import com.darky.core.caching.Darkcoin;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
@@ -8,11 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -56,12 +57,87 @@ public class Database {
         }
     }
 
-    public List<Miner> getAllMiners() {
-        ArrayList<Miner> miners = new ArrayList<>();
+    public <T> void setEntities(Class<T> clazz, Map<String, T> entities) {
+        String sql = "INSERT INTO %s (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s;";
+        String[] fieldnames = new String[clazz.getDeclaredFields().length];
+        for (int i = 0; i < clazz.getDeclaredFields().length; i++) {
+            fieldnames[i] = clazz.getDeclaredFields()[i].getName();
+        }
+        try {
+            for (Object entity : entities.values()) {
+                String[] values = new String[clazz.getDeclaredFields().length];
+                for (int i = 0; i < clazz.getDeclaredFields().length; i++) {
+                    values[i] = String.valueOf(clazz.getDeclaredFields()[i].get(entity));
+                }
+                StringBuilder valueBuilder = new StringBuilder();
+                for (int i = 0; i < values.length; i++) {
+                    valueBuilder.append("'"+values[i]+"'");
+                    if (values.length-1!=i) {
+                        valueBuilder.append(", ");
+                    }
+                }
+
+                StringBuilder nameandvaluebuilder = new StringBuilder();
+                for (int i = 0; i < values.length; i++) {
+                    nameandvaluebuilder.append(fieldnames[i]+"='"+values[i]+"'");
+                    if (values.length-1!=i) {
+                        nameandvaluebuilder.append(", ");
+                    }
+                }
+
+                String finalsql = format(sql, clazz.getSimpleName(), String.join(",", fieldnames), valueBuilder.toString(), nameandvaluebuilder.toString());
+                try (PreparedStatement preparedStatement = connection.prepareStatement(finalsql)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T> Map<String, T> getEntities(Class<T> clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        Class<T>[] arguments = new Class[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            arguments[i] = (Class<T>) fields[i].getType();
+        }
+        Map<String, T> entities = new HashMap();
+        Constructor<?> ctor = null;
+        try {
+            ctor = clazz.getConstructor(arguments);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        try (var statement = connection.prepareStatement("SELECT * FROM `"+clazz.getSimpleName()+"`")) {
+            var set = statement.executeQuery();
+            while (set.next()) {
+                ArrayList<Object> objects = new ArrayList<>();
+                for (int i = 0; i < fields.length; i++) {
+                    objects.add(set.getObject(fields[i].getName().replace(clazz.getName()+".", ""), fields[i].getType()));
+                }
+                entities.put(set.getString(1), (T) ctor.newInstance(objects.toArray()));
+            }
+            return entities;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Darkcoin> getAllMiners() {
+        ArrayList<Darkcoin> miners = new ArrayList<>();
         try (var statement = connection.prepareStatement("SELECT * FROM `Darkcoin`")) {
             var set = statement.executeQuery();
             while (set.next()) {
-                miners.add(new Miner(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance")));
+                miners.add(new Darkcoin(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,13 +145,13 @@ public class Database {
         return miners;
     }
 
-    public List<Miner> getMinerfromUser(User user) {
-        ArrayList<Miner> miners = new ArrayList<>();
+    public List<Darkcoin> getMinerfromUser(User user) {
+        ArrayList<Darkcoin> miners = new ArrayList<>();
         try (var statement = connection.prepareStatement("SELECT * FROM Darkcoin WHERE user_id=?")) {
             statement.setLong(1, user.getIdLong());
             var set = statement.executeQuery();
             while (set.next()) {
-                miners.add(new Miner(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance")));
+                miners.add(new Darkcoin(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,20 +159,20 @@ public class Database {
         return miners;
     }
 
-    public Miner getMinerfromMinerID(Integer minerid) {
+    public Darkcoin getMinerfromMinerID(Integer minerid) {
         try (var statement = connection.prepareStatement("SELECT * FROM Darkcoin WHERE miner_id=?")) {
             statement.setLong(1, minerid);
             var set = statement.executeQuery();
             if (set.next())
-                return new Miner(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance"));
+                return new Darkcoin(set.getLong("user_id"), set.getLong("miner_id"), set.getLong("minedcoins"), set.getLong("chance"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void setMiner(Miner miner) {
-        this.executeUpdate(Statements.updateMiner, miner.getMinedcoins(), miner.getChance(), miner.getMinerID());
+    public void setMiner(Darkcoin miner) {
+        this.executeUpdate(Statements.updateMiner, miner.getMinedcoins(), miner.getChance(), miner.getMiner_id());
     }
 
     public void insertMiner(long user_id) {
@@ -206,7 +282,7 @@ public class Database {
         return this;
     }
 
-    private void setStatement(Object[] args, PreparedStatement statement) {
+    public void setStatement(Object[] args, PreparedStatement statement) {
         try {
             for (int i = 0; i < args.length; i++) {
                 Object current = args[i];
@@ -236,7 +312,7 @@ public class Database {
                 "CREATE TABLE IF NOT EXISTS Discord_guild (guild_id BIGINT NOT NULL,PRIMARY KEY (guild_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_user (user_id BIGINT NOT NULL,embedcolor VARCHAR(80) NOT NULL DEFAULT '#000000',coins BIGINT NOT NULL DEFAULT '100',created BIGINT NOT NULL,PRIMARY KEY (user_id));",
                 "CREATE TABLE IF NOT EXISTS Discord_member (guild_id BIGINT NOT NULL,user_id BIGINT NOT NULL,permissions VARCHAR(80) NOT NULL DEFAULT 'user.*',UNIQUE (user_id, guild_id),FOREIGN KEY (guild_id) REFERENCES Discord_guild (guild_id)" +
-                        " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id));",
+                        " ON DELETE CASCADE,FOREIGN KEY (user_id) REFERENCES Discord_user (user_id),PRIMARY KEY (user_id,guild_id));",
                 "CREATE TABLE IF NOT EXISTS Darkcoin (user_id BIGINT NOT NULL,minedcoins BIGINT NOT NULL DEFAULT '0',chance BIGINT NOT NULL DEFAULT '1',miner_id BIGINT NOT NULL AUTO_INCREMENT," +
                         "FOREIGN KEY (user_id) REFERENCES Discord_user (user_id),PRIMARY KEY (miner_id));"
         };

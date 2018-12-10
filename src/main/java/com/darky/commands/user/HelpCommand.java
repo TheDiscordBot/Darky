@@ -1,6 +1,6 @@
 package com.darky.commands.user;
 
-import com.darky.core.Database;
+import com.darky.core.caching.Cache;
 import com.darky.util.DescriptionBuilder;
 import com.github.johnnyjayjay.discord.commandapi.AbstractHelpCommand;
 import com.github.johnnyjayjay.discord.commandapi.CommandEvent;
@@ -47,19 +47,19 @@ public class HelpCommand extends AbstractHelpCommand {
         });
 
         embed.addField("We are sponsored by LudusHosting", "[Click here!](https://ludus-hosting.de/aff.php?aff=45)", false);
-        sendMessage(event.getDatabase(), event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
+        sendMessage(event.getCache(), event.getChannel(),null, null, event.getAuthor(), false, null, embed).queue();
 
     }
 
     @Override
-    public void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels, Database database) {
-        event.respond(command.info(event.getMember(), prefix, labels, event.getDatabase()));
+    public void provideSpecificHelp(CommandEvent event, String prefix, ICommand command, Set<String> labels, Cache cache) {
+        event.respond(command.info(event.getMember(), prefix, labels, event.getCache()));
     }
 
     @Override
-    public Message info(Member member, String prefix, Set<String> labels, Database database) {
+    public Message info(Member member, String prefix, Set<String> labels, Cache cache) {
         return new DescriptionBuilder()
-                .setColor(database.getColor(member.getUser()))
+                .setColor(cache.getUser(member.getUser()).getEmbedcolor())
                 .addUsage(prefix, labels, "", "Shows the help message")
                 .addUsage(prefix, labels, "<command>", "Shows more information about the command")
                 .build();

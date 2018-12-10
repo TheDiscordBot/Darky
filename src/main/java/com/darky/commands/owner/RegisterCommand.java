@@ -14,13 +14,13 @@ public class RegisterCommand implements ICommand {
 
     @Override
     public void onCommand(CommandEvent event, Member member, TextChannel channel, String[] args) throws Exception {
-        sendMessage(event.getDatabase(), channel, "Registering all Users and Guilds...", null, event.getAuthor()).queue(m -> {
+        sendMessage(event.getCache(), channel, "Registering all Users and Guilds...", null, event.getAuthor()).queue(m -> {
             for (Guild guild : event.getJDA().asBot().getShardManager().getGuilds()) {
                 for (Member member1 : guild.getMembers()) {
-                    event.getDatabase().createIfNotExists(member1);
+                    event.getCache().createIfNotExist(member1);
                 }
             }
-            editMessage(m, event.getDatabase(), "Finished!", null, event.getAuthor(), false, null, null).queue();
+            editMessage(m, event.getCache(), "Finished!", null, event.getAuthor(), false, null, null).queue();
         });
     }
 }

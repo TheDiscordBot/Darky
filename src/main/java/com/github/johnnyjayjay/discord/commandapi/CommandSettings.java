@@ -1,7 +1,7 @@
 package com.github.johnnyjayjay.discord.commandapi;
 
 import com.darky.core.Config;
-import com.darky.core.Database;
+import com.darky.core.caching.Cache;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -75,8 +75,8 @@ public class CommandSettings {
      * @param labelIgnoreCase Set this to true, if you want deactivate case sensitivity for the recognition of labels. E.g.: there will be no difference between the labels "foo",
      *                       "FOO", "FoO" and so on.
      */
-    public CommandSettings(@Nonnull String defaultPrefix, @Nonnull ShardManager shardManager, boolean labelIgnoreCase, Config config, Database database) {
-        this(defaultPrefix, labelIgnoreCase, config, database);
+    public CommandSettings(@Nonnull String defaultPrefix, @Nonnull ShardManager shardManager, boolean labelIgnoreCase, Config config, Cache cache) {
+        this(defaultPrefix, labelIgnoreCase, config, cache);
         this.jda = shardManager;
         this.useShardManager = true;
     }
@@ -89,15 +89,15 @@ public class CommandSettings {
      * @param labelIgnoreCase Set this to true, if you want deactivate case sensitivity for the recognition of labels. E.g.: there will be no difference between the labels "foo",
      *                        "FOO", "FoO" and so on.
      */
-    public CommandSettings(@Nonnull String defaultPrefix, @Nonnull JDA jda, boolean labelIgnoreCase, Config config, Database database) {
-        this(defaultPrefix, labelIgnoreCase, config, database);
+    public CommandSettings(@Nonnull String defaultPrefix, @Nonnull JDA jda, boolean labelIgnoreCase, Config config, Cache cache) {
+        this(defaultPrefix, labelIgnoreCase, config, cache);
         this.jda = jda;
         this.useShardManager = false;
     }
 
-    private CommandSettings(@Nonnull String defaultPrefix, boolean labelIgnoreCase, Config config, Database database) {
+    private CommandSettings(@Nonnull String defaultPrefix, boolean labelIgnoreCase, Config config, Cache cache) {
         this.commands = new HashMap<>();
-        this.listener = new CommandListener(this, config, database);
+        this.listener = new CommandListener(this, config, cache);
         this.activated = false;
         this.cooldown = 0;
         this.helpColor = null;
